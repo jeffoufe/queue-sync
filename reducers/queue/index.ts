@@ -1,16 +1,22 @@
 import { QueueAction, QueueReducerState } from './types';
-import { SET_QUEUE } from './constants'
+import { ADD_TO_QUEUE, NEXT_SONG, INCREMENT_INDEX } from './constants'
 
 const initialState = {
-    tracks: []
-}
+    tracks: [],
+    currentIndex: 0
+};
 
 export default (state: QueueReducerState = initialState, action: QueueAction) => {
     switch (action.type) {
-        case SET_QUEUE:
+        case ADD_TO_QUEUE:
             return { 
                 ...state,
-                tracks: action.payload.tracks
+                tracks: [...state.tracks, ...action.payload.tracks]
+            }
+        case INCREMENT_INDEX:
+            return {
+                ...state,
+                currentIndex: state.currentIndex + 1
             }
         default:
             return state;

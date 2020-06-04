@@ -1,4 +1,4 @@
-import { put, takeEvery, select } from 'redux-saga/effects'
+import { put, takeEvery, select, call } from 'redux-saga/effects'
 import {
     FETCH_TRACKS,
     FETCH_TRACKS_ERROR,
@@ -28,6 +28,7 @@ function* fetchTracks(action: FetchTracksAction) {
         getFetchParameters(provider, accessToken)
     );
     if (response.status >= 400) {
+        alert('pute');
         yield put({ type: FETCH_TRACKS_ERROR, payload: { error: "Bad response from server", provider }})
     } else {
         const responseJSON = yield response.json();

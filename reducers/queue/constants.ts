@@ -1,1 +1,4 @@
-export const SET_QUEUE = 'QUEUE/SET_QUEUE';
+export const ADD_TO_QUEUE = 'QUEUE/ADD_TO_QUEUE';
+export const PLAY_TRACK = 'QUEUE/PLAY_TRACK';
+export const NEXT_SONG = 'QUEUE/NEXT_SONG';
+export const INCREMENT_INDEX = 'QUEUE/INCREMENT_INDEX';

@@ -1,33 +1,96 @@
-import { put, takeEvery, select } from 'redux-saga/effects'
-import { SET_QUEUE } from './constants';
+import { call, takeEvery, select, put } from 'redux-saga/effects'
+import { PLAY_TRACK, NEXT_SONG, INCREMENT_INDEX } from './constants';
 
-interface SetQueueAction {
-    payload: {
-        tracks: Array<any>
+function* playSpotifyTrack(track: any) {
+    const { deviceID, accessToken } = yield select((state: any) => state.user.spotify);
+    yield fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`, 
+        {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                uris: [`spotify:track:${track.id}`]
+            })
+        }
+    );
+}
+
+function* playSoundCloudTrack(track: any) {
+    const { soundObject } = track;
+    try {
+        const response = yield fetch(track.url)
+        const stream = yield response.json();
+        const mp3Url = stream.url;
+        yield soundObject.loadAsync({ uri: mp3Url });
+        yield soundObject.playAsync();
+    } catch (error) {
+        alert(error);
     }
 }
 
-/* function* setQueue(action: SetQueueAction) {
-    const { tracks, index } = action.payload;
-    yield put({ type: FETCH_TRACKS_LOADING, payload: { search } });
-    const { accessToken } = yield select((state: any) => state.user.spotify)
-    const response = yield fetch(
-        `https://api.spotify.com/v1/search?q=${search}&offset=${index}&type=track`,
+function* playTrack() {
+    const { currentIndex, tracks } = yield select((state: any) => state.queue);
+    const track = tracks[currentIndex];
+    let playFn;
+    switch(track.type) {
+        case 'spotify':
+            playFn = playSpotifyTrack;
+            break;
+        case 'soundcloud':
+            playFn = playSoundCloudTrack;
+            break;
+        default:
+            break;
+    }
+    if (playFn) {
+        yield call(playFn, track);
+    }
+}
+
+export function* watchPlayTrack() {
+    yield takeEvery(PLAY_TRACK, playTrack)
+}
+
+function* stopSoundCloudTrack(currentTrack: any) {
+    yield currentTrack.soundObject.pauseAsync();
+    yield currentTrack.soundObject.unloadAsync();
+}
+
+function* stopSpotifyTrack() {
+    const { deviceID, accessToken } = yield select((state: any) => state.user.spotify);
+    yield fetch(
+        `https://api.spotify.com/v1/me/player/pause?device_id=${deviceID}`, 
         {
+            method: 'PUT',
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         }
     );
-    if (response.status >= 400) {
-        console.log(response);
-        yield put({ type: FETCH_TRACKS_ERROR, payload: { error: "Bad response from server" }})
-    } else {
-        const { tracks } = yield response.json();
-        yield put({ type: FETCH_TRACKS_SUCCESS, payload: { tracks: tracks.items } })
+}
+
+function* pauseCurrentTrack() {
+    const { currentIndex, tracks } = yield select((state: any) => state.queue);
+    const currentTrack = tracks[currentIndex];
+    switch (currentTrack.type) {
+        case 'soundcloud':
+            yield call(stopSoundCloudTrack, currentTrack);
+            break;
+        case 'spotify':
+            yield call(stopSpotifyTrack);
+            break;
+            
     }
 }
 
-export function* watchFetchTracks() {
-    yield takeEvery(FETCH_TRACKS, fetchTracks)
-} */
+function* nextSong() {
+    yield call(pauseCurrentTrack)
+    yield put({ type: INCREMENT_INDEX });
+    yield put({ type: PLAY_TRACK });
+}
+
+export function* watchNextSong() {
+    yield takeEvery(NEXT_SONG, nextSong)
+}

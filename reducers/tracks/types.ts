@@ -1,4 +1,5 @@
 import { 
+    FETCH_TRACKS,
     FETCH_TRACKS_SUCCESS, 
     FETCH_TRACKS_ERROR, 
     FETCH_TRACKS_LOADING,
@@ -37,7 +38,7 @@ interface FetchTracksErrorAction {
 }
 
 export type TracksAction = 
-    FetchTracksLoadingAction 
+    FetchTracksLoadingAction
     | FetchTracksSuccessAction 
     | FetchTracksErrorAction
     | ChangeProviderAction
@@ -54,4 +55,49 @@ export interface TracksReducerState {
     currentProviderIndex: number,
     spotify: ProviderObject,
     soundcloud: ProviderObject   
+}
+
+export interface SpotifyTrack {
+    album: {
+        images: Array<{
+            url: string
+        }>
+    },
+    id: string
+    name: string,
+    artists: Array<{
+        name: string
+    }>
+}
+
+export interface SpotifyArtist {
+    name: string
+}
+
+export interface SpotifyTracksResponse {
+    tracks: {
+        items: Array<SpotifyTrack>
+    }
+}
+
+export interface SoundCloudTrack {
+    artwork_url: string,
+    user: {
+        full_name: string,
+        avatar_url: string,
+    },
+    title: string,
+    id: string,
+    media: {
+        transcodings: Array<{
+            format: {
+                protocol: string
+            },
+            url: string
+        }>
+    }
+}
+
+export interface SoundCloudTracksResponse {
+    collection: Array<SoundCloudTrack>
 }

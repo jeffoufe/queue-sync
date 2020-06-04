@@ -1,16 +1,23 @@
 import { 
-    SET_QUEUE
+    ADD_TO_QUEUE, NEXT_SONG, INCREMENT_INDEX
 } from './constants';
 
 interface SetQueueAction {
-    type: typeof SET_QUEUE,
+    type: typeof ADD_TO_QUEUE,
     payload: {
         tracks: Array<any>
     }
 }
+
+interface NextSongAction {
+    type: typeof INCREMENT_INDEX,
+}
   
-export type QueueAction = SetQueueAction
+export type QueueAction = 
+    SetQueueAction
+    | NextSongAction
 
 export interface QueueReducerState {
-    tracks: Array<any>
+    tracks: Array<any>,
+    currentIndex: number
 }

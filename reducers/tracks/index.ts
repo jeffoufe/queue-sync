@@ -37,7 +37,7 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                 [action.payload.provider]: {
                     ...state.spotify,
                     loading: false,
-                    tracks: [...state.spotify.tracks, ...action.payload.tracks],
+                    tracks: action.payload.tracks,
                     error: ''
                 },
             }
