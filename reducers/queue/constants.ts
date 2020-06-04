@@ -1,0 +1,1 @@
+export const SET_QUEUE = 'QUEUE/SET_QUEUE';
