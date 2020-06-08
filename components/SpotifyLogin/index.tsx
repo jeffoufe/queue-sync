@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Text, RadioGroup, Radio, Card, CardHeader } from '@ui-kitten/components';
+import { Button, Text, RadioGroup, Radio, Card } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { AUTHORIZE_SPOTIFY, SELECT_DEVICE_SPOTIFY, LOGOUT_SPOTIFY, GET_DEVICES_SPOTIFY } from '../../reducers/user/constants';
 import { SpotifyDeviceObject } from '../../reducers/user/types';
@@ -31,14 +31,15 @@ export default () => {
     }
 
     const Header = () => (
-        <CardHeader title='Spotify' />
+        <Text category='h6' style={styles.title}>Spotify</Text>
     );
 
     const Footer = () => (
         <View style={styles.footerContainer}>
             {!(spotify && spotify.accessToken) && (
                 <Button 
-                    style={styles.spotifyButton} 
+                    style={styles.spotifyButton}
+                    size='small'
                     onPress={onPressButton}
                 >
                     LOGIN
@@ -48,6 +49,7 @@ export default () => {
                 <>
                     <Button 
                         status='basic'
+                        size='small'
                         style={styles.refreshButton} 
                         onPress={() => {
                             
@@ -58,6 +60,8 @@ export default () => {
                     </Button>
                     <Button 
                         status='basic'
+                        size='small'
+                        style={styles.logoutButton}
                         onPress={onPressDisconnectButton}
                     >
                         LOGOUT
@@ -79,7 +83,7 @@ export default () => {
                                 onChange={onSelectDevice}
                             >
                                 {spotify.devices.map((device: SpotifyDeviceObject) => (
-                                    <Radio text={device.name}></Radio>
+                                    <Radio>{device.name}</Radio>
                                 ))}
                             </RadioGroup>
                         )
@@ -102,12 +106,19 @@ const styles = StyleSheet.create({
     card: {
         marginTop: 10
     },
+    title: {
+        margin: 10
+    },
     refreshButton: {
+        margin: 10
+    },
+    logoutButton: {
         marginRight: 10
     },
     spotifyButton: {
         backgroundColor: '#20D760',
         borderColor: '#20D760',
+        margin: 10
     },
     footerContainer: {
         flexDirection: 'row',

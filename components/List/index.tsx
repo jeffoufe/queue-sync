@@ -35,10 +35,7 @@ const renderItem = ({ item: { icon, avatar, title, description, onPress, accesso
                 e.stopPropagation();
                 accessory.onPress();
             }
-            // return <Icon {...style} name={accessory.icon} onPress={accessory.onPress} height={25} width={25} color='black' />
-            return <TouchableOpacity onPress={onPress} style={styles.icon}>
-                <Text style={styles.iconText}>Add</Text>
-            </TouchableOpacity>
+            return <Icon {...style} name={accessory.icon} onPress={onPress} height={25} width={25} color='black' />
         }
         return <View />;
     }
@@ -47,10 +44,10 @@ const renderItem = ({ item: { icon, avatar, title, description, onPress, accesso
         <ListItem
             title={title}
             description={description}
-            icon={renderIcon}
+            accessoryLeft={renderIcon}
             style={styles.listItem}
             onPress={onPress}
-            accessory={renderItemAccessory}
+            accessoryRight={renderItemAccessory}
         />
     )
 }
@@ -74,7 +71,9 @@ const styles = StyleSheet.create({
     avatar: {
         opacity: 1, 
         width: 35, 
-        height: 35 
+        height: 35,
+        marginLeft: 10,
+        marginRight: 4
     },
     icon: {
         height: 40,

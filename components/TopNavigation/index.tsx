@@ -30,16 +30,20 @@ export default ({ title, rightControls, onSearch, leftControl }: TopNavigationPr
   const props = {
     title: '',
     style: styles.topNavigation,
-    rightControls: [<View />],
-    leftControl: <View />,
+    accessoryRight: () => <View />,
+    accessoryLeft: () => <View />,
   }
 
   if (rightControls) {
-    props.rightControls = rightControls.map((rightControl: TopNavigationControl) => generateAction(rightControl));
+    props.accessoryRight = () => (
+      <>
+        {rightControls.map((rightControl: TopNavigationControl) => generateAction(rightControl))}
+      </>
+    );
   }
   
   if (leftControl) {
-    props.leftControl = generateAction(leftControl)
+    props.accessoryLeft = () => generateAction(leftControl)
   }
 
   if (onSearch) {

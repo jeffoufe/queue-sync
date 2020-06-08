@@ -29,7 +29,7 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator headerMode='none'>
               {Object.keys(routes).map((route: string) => (
-                <Stack.Screen name={route}>
+                <Stack.Screen name={route} key={route}>
                   {({ navigation }) => generateRouteComponent(navigation, routes[route])}
                 </Stack.Screen>
               ))}

@@ -12,6 +12,7 @@ export default ({ navigation }: SettingsProps) => {
         <SafeAreaView>
             <TopNavigation 
                 navigation={navigation} 
+                title='Settings'
                 leftControl={{
                     icon: 'arrow-back-outline',
                     onPress: navigation.goBack
@@ -26,8 +27,6 @@ export default ({ navigation }: SettingsProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        overflow: 'scroll', 
-        // height: 'calc(100vh - 116px)',
         margin: 12,
         marginBottom: 10,
         marginTop: 0

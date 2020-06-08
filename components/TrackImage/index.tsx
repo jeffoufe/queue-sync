@@ -5,4 +5,11 @@ interface TrackImageProps {
     image: string
 }
 
-export default ({ image }: TrackImageProps) => <Avatar size='small' source={{ uri: image }} />
+export default ({ image }: TrackImageProps) => (
+    <Avatar 
+        size='small' 
+        height={35}
+        width={35}
+        source={{ uri: image }} 
+    />
+);
