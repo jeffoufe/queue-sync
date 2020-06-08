@@ -5,14 +5,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { default as appTheme } from './theme.json';
-import { mapping } from './components';
+import { mapping, Player, Route } from './components';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store';
 import * as eva from '@eva-design/eva';
-
-import { Home, Settings } from './pages';
+import { routes } from './utils';
 
 const Stack = createStackNavigator();
+
+const generateRouteComponent = (navigation: any, Component: any) => (
+  <Route navigation={navigation} Component={Component} />
+)
 
 export default function App() {
   return (
@@ -25,9 +28,13 @@ export default function App() {
         >
           <NavigationContainer>
             <Stack.Navigator headerMode='none'>
-              <Stack.Screen name='Home' component={Home}/>
-              <Stack.Screen name="Settings" component={Settings} />
+              {Object.keys(routes).map((route: string) => (
+                <Stack.Screen name={route}>
+                  {({ navigation }) => generateRouteComponent(navigation, routes[route])}
+                </Stack.Screen>
+              ))}
             </Stack.Navigator>
+            <Player />
           </NavigationContainer>
         </ApplicationProvider>
       </PersistGate>

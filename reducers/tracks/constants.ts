@@ -20,6 +20,6 @@ export const PROVIDERS = [
 ];
 
 export const SEARCH_URLS = [
-    (search: string, index: number) => `https://api.spotify.com/v1/search?q=${search}&offset=${index}&type=track`,
-    (search: string) => `https://api-v2.soundcloud.com/search/tracks?q=${search}&client_id=aybGMKN6zsjDmDCOGHLx6POpkd9naasI`
+    (search: string) => `https://api.spotify.com/v1/search?q=${search}&type=track`,
+    (search: string) => `https://api-v2.soundcloud.com/search/tracks?q=${search}&client_id=hUbL6gBfXqU5bngWuyasBylAGC2Pm6Jg`
 ];

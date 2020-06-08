@@ -18,22 +18,24 @@ interface FetchTracksAction {
 }
 
 function* fetchTracks(action: FetchTracksAction) {
-    const { search, index } = action.payload;
+    const { search } = action.payload;
     const { currentProviderIndex } = yield select((state: any) => state.tracks);
     const provider = PROVIDERS[currentProviderIndex].toLowerCase();
-    const { accessToken } = yield select((state: any) => state.user[provider])
-    yield put({ type: FETCH_TRACKS_LOADING, payload: { search, provider } });
-    const response = yield fetch(
-        SEARCH_URLS[currentProviderIndex](search, index),
-        getFetchParameters(provider, accessToken)
-    );
-    if (response.status >= 400) {
-        alert('pute');
-        yield put({ type: FETCH_TRACKS_ERROR, payload: { error: "Bad response from server", provider }})
-    } else {
-        const responseJSON = yield response.json();
-        const tracks = yield TRANSFORMS[currentProviderIndex](responseJSON);
-        yield put({ type: FETCH_TRACKS_SUCCESS, payload: { tracks, provider } }) 
+    const providerObject = yield select((state: any) => state.user[provider])
+    if (providerObject.accessToken || provider === 'soundcloud') {
+        yield put({ type: FETCH_TRACKS_LOADING, payload: { search, provider } });
+        const response = yield fetch(
+            SEARCH_URLS[currentProviderIndex](search),
+            getFetchParameters(provider, providerObject.accessToken)
+        );
+        if (response.status >= 400) {
+            alert('pute');
+            yield put({ type: FETCH_TRACKS_ERROR, payload: { error: "Bad response from server", provider }})
+        } else {
+            const responseJSON = yield response.json();
+            const tracks = yield TRANSFORMS[currentProviderIndex](responseJSON);
+            yield put({ type: FETCH_TRACKS_SUCCESS, payload: { tracks, provider } }) 
+        }
     }
 }
 

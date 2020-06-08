@@ -3,9 +3,9 @@ import createSagaMiddleware from 'redux-saga'
 import { persistStore, persistReducer } from 'redux-persist';
 import { AsyncStorage } from 'react-native'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import { tracksReducer, userReducer, queueReducer } from './reducers';
+import { tracksReducer, userReducer, queueReducer, routerReducer } from './reducers';
 import { watchFetchTracks } from './reducers/tracks/sagas';
-import { watchPlayTrack, watchNextSong } from './reducers/queue/sagas';
+import { watchPlayTrack, watchNextSong, watchInstantPlayTrack, watchPlayPauseCurrentTrack } from './reducers/queue/sagas';
 import { watchAuthorize } from './reducers/user/sagas';
 import { all } from 'redux-saga/effects';
 import logger from 'redux-logger'
@@ -15,7 +15,7 @@ const persistConfig = {
     storage: AsyncStorage,
     whitelist: ['user'],
     stateReconciler: autoMergeLevel2 // see "Merge Process" section for details.
-   };
+};
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -24,14 +24,17 @@ function* rootSaga() {
         watchFetchTracks(),
         watchAuthorize(),
         watchPlayTrack(),
-        watchNextSong()
+        watchInstantPlayTrack(),
+        watchNextSong(),
+        watchPlayPauseCurrentTrack()
     ])
   }
 
 const reducers = combineReducers({
     tracks: tracksReducer,
     user: userReducer,
-    queue: queueReducer
+    queue: queueReducer,
+    router: routerReducer
 });
 
 const persistedReducerers = persistReducer(persistConfig, reducers);

@@ -1,6 +1,6 @@
 import { put, takeEvery, select, call } from 'redux-saga/effects'
-import { SpotifyAuthResponse } from './types';
 import * as AuthSession from 'expo-auth-session';
+import { Clipboard } from 'react-native';
 import { 
     AUTHORIZE_SPOTIFY_ERROR, 
     AUTHORIZE_SPOTIFY_LOADING, 
@@ -19,7 +19,6 @@ const credentials = {
 
 function* getAvailableDevices() {
     const accessToken = yield select((state: any) => state.user.spotify.accessToken);
-    console.log("ACCESS TOKEN :", accessToken);
 
     const availableDevicesResponse = yield fetch(
         'https://api.spotify.com/v1/me/player/devices',
@@ -64,6 +63,8 @@ function* authorizeSpotify() {
     });
 
     const tokenResponseJSON = yield tokenResponse.json();
+
+    Clipboard.setString(`${tokenResponseJSON.access_token}`);
 
     yield put({ 
         type: AUTHORIZE_SPOTIFY_LOADING, 

@@ -49,7 +49,10 @@ export default () => {
                     <Button 
                         status='basic'
                         style={styles.refreshButton} 
-                        onPress={onPressRefreshButton}
+                        onPress={() => {
+                            
+                            onPressRefreshButton();
+                        }}
                     >
                         REFRESH DEVICES
                     </Button>

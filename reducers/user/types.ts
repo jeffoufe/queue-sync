@@ -57,10 +57,18 @@ interface LogoutpotifyAction {
     type: typeof LOGOUT_SPOTIFY
 }
 
+interface SoundcloudObject {
+    accessToken: null | string,
+    expirationTime: null | number,
+    error: null | string,
+    loading: boolean
+}
+
 interface RehydrateAction {
     type: typeof REHYDRATE,
     payload: {
-        spotify: SpotifyObject
+        spotify: SpotifyObject,
+        soundcloud: SoundcloudObject
     }
 }
 

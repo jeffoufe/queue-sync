@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Modal, Layout, Button, CardHeader } from '@ui-kitten/components';
+import { StyleSheet, Text } from 'react-native';
+import { Modal, Layout, Button } from '@ui-kitten/components';
 
 interface ModalProps {
     isOpen: boolean,
     title: string,
-    onCloseModal: () => void,
+    onCloseModal: (hasConfirmed: boolean) => void,
     children: React.ReactNode
 }
 
@@ -15,12 +15,15 @@ export default ({ isOpen, onCloseModal, children, title }: ModalProps) => {
             <Modal 
                 visible={isOpen}
                 backdropStyle={styles.backdrop}
-                onBackdropPress={onCloseModal}
+                onBackdropPress={() => onCloseModal(false)}
             >
                 <Layout style={styles.modalContainer}> 
-                    <CardHeader title={title} />  
+                    <Text style={styles.title}>{title}</Text> 
                     {children}      
-                    <Button onPress={onCloseModal} style={styles.confirmButton}>
+                    <Button 
+                        onPress={() => onCloseModal(true)} 
+                        style={styles.confirmButton}
+                    >
                         CONFIRM
                     </Button>
                 </Layout>
@@ -30,6 +33,12 @@ export default ({ isOpen, onCloseModal, children, title }: ModalProps) => {
 }
 
 const styles = StyleSheet.create({
+    title: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        lineHeight: 24,
+        marginBottom: 20
+    },
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
@@ -40,6 +49,7 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     confirmButton: {
-        marginTop: 20
+        marginTop: 20,
+        width: '100%'
     }
 });

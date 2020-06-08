@@ -8,12 +8,15 @@ interface SettingsProps {
 };
 
 export default ({ navigation }: SettingsProps) => {
-    const { user } = useSelector((state: any) => state.tracks)
-    const dispatch = useDispatch();
-
     return (
         <SafeAreaView>
-            <TopNavigation navigation={navigation} />
+            <TopNavigation 
+                navigation={navigation} 
+                leftControl={{
+                    icon: 'arrow-back-outline',
+                    onPress: navigation.goBack
+                }}
+            />
             <View style={styles.container}>
                 <SpotifyLogin />
             </View>
