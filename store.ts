@@ -5,7 +5,7 @@ import { AsyncStorage } from 'react-native'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { tracksReducer, userReducer, queueReducer, routerReducer } from './reducers';
 import { watchFetchTracks } from './reducers/tracks/sagas';
-import { watchPlayTrack, watchNextSong, watchInstantPlayTrack, watchPlayPauseCurrentTrack } from './reducers/queue/sagas';
+import { watchPlayTrack, watchNextSong, watchInstantPlayTrack, watchPlayPauseCurrentTrack, watchGetParty, watchCreateParty } from './reducers/queue/sagas';
 import { watchAuthorize } from './reducers/user/sagas';
 import { all } from 'redux-saga/effects';
 import logger from 'redux-logger'
@@ -26,7 +26,9 @@ function* rootSaga() {
         watchPlayTrack(),
         watchInstantPlayTrack(),
         watchNextSong(),
-        watchPlayPauseCurrentTrack()
+        watchPlayPauseCurrentTrack(),
+        watchCreateParty(),
+        watchGetParty()
     ])
   }
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { SET_ROOM_NAME } from '../../reducers/queue/constants';
-import { TopNavigation, List, Modal, Input } from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { CREATE_PARTY_ACTIONS } from '../../reducers/queue/constants';
+import { TopNavigation, List, Modal, Input, QRScanner } from '../../components';
 
 interface NewHomeProps {
     navigation: any
@@ -11,6 +11,8 @@ interface NewHomeProps {
 export default ({ navigation }: NewHomeProps) => {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [roomName, setRoomName] = useState('');
+    const [isQRScannerVisible, setQRScannerVisible] = useState(false);
+    const { loading } = useSelector((state: any) => state.queue)
     const dispatch = useDispatch();
 
     const onCreateRoom = () => setShowCreationModal(true);
@@ -18,28 +20,33 @@ export default ({ navigation }: NewHomeProps) => {
     const onCloseModal = (hasConfirmed: boolean) => {
         if (hasConfirmed) {
             dispatch({
-                type: SET_ROOM_NAME,
-                payload: { roomName }
+                type: CREATE_PARTY_ACTIONS.saga,
+                successCallback: () => {
+                    setShowCreationModal(false);
+                    navigation.navigate('Queue');
+                },
+                payload: { name: roomName }
             });
-            navigation.navigate('Queue');
         }
-        setShowCreationModal(false);
     }
 
     const data = [
         { title: 'Create a new party', icon: 'plus-outline', onPress: onCreateRoom },
-        { title: 'Join an existing party', icon: 'log-in-outline' }
+        { title: 'Join an existing party', icon: 'log-in-outline', onPress: () => setQRScannerVisible(true) }
     ];
 
     return (
         <SafeAreaView>
-            <TopNavigation title='QueueSync' />
+            {isQRScannerVisible && <QRScanner />}
+
+            <TopNavigation title='QueueSync' navigation={navigation} />
             <View>
                 <List data={data} />
             </View>
             <Modal
                 isOpen={showCreationModal}
                 title='Enter party name'
+                loading={loading}
                 onCloseModal={onCloseModal}
             >
                 <Input

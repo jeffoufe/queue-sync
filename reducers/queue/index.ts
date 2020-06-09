@@ -1,13 +1,50 @@
 import { QueueAction, QueueReducerState } from './types';
-import { ADD_TO_QUEUE, PREPEND_TO_QUEUE, SET_ROOM_NAME, POP_SONG, INSTANT_PLAY_TRACK, PLAY_PAUSE_TRACK } from './constants'
+import { 
+    ADD_TO_QUEUE, 
+    PREPEND_TO_QUEUE, 
+    CREATE_PARTY_ACTIONS, 
+    POP_SONG, 
+    INSTANT_PLAY_TRACK, 
+    PLAY_PAUSE_TRACK,
+    GET_PARTY_ACTIONS
+} from './constants'
 
 const initialState = {
-    tracks: []
+    tracks: [],
+    // _id: null,
+    _id: '5edf93e9f3b83fc495fb31b1',
+    name: null,
+    loadingCreateParty: false,
+    loadingGetParty: false
 };
 
 export default (state: QueueReducerState = initialState, action: QueueAction) => {
     const [track, ...rest] = state.tracks
     switch (action.type) {
+        case CREATE_PARTY_ACTIONS.loading:
+            return {
+                ...state,
+                loadingCreateParty: true
+            }
+        case CREATE_PARTY_ACTIONS.success:
+            return {
+                ...state,
+                name: action.payload.name,
+                _id: action.payload['_id'],
+                loadingCreateParty: false
+            }
+        case GET_PARTY_ACTIONS.loading:
+            return {
+                ...state,
+                loadingGetParty: true
+            }
+        case GET_PARTY_ACTIONS.success:
+            return {
+                ...state,
+                name: action.payload.name,
+                tracks: action.payload.tracks,
+                loadingGetParty: false
+            }
         case PREPEND_TO_QUEUE:
             return {
                 ...state,
@@ -27,11 +64,6 @@ export default (state: QueueReducerState = initialState, action: QueueAction) =>
             return {
                 ...state,
                 tracks: [{ ...track, isPlayed: true }, ...rest]
-            }
-        case SET_ROOM_NAME:
-            return {
-                ...state,
-                roomName: action.payload.roomName
             }
         case POP_SONG:
             return {

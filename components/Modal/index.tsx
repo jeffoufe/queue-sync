@@ -1,15 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
-import { Modal, Layout, Button } from '@ui-kitten/components';
+import { StyleSheet, Text, View } from 'react-native';
+import { Modal, Layout, Button, Spinner } from '@ui-kitten/components';
 
 interface ModalProps {
     isOpen: boolean,
     title: string,
+    loading?: boolean,
     onCloseModal: (hasConfirmed: boolean) => void,
     children: React.ReactNode
 }
 
-export default ({ isOpen, onCloseModal, children, title }: ModalProps) => {
+const LoadingIndicator = () => (
+    <View style={styles.indicator}>
+      <Spinner size='small' status='basic' />
+    </View>
+  );
+
+export default ({ isOpen, onCloseModal, children, title, loading }: ModalProps) => {
+    const buttonProps = loading
+        ? { accessoryLeft: LoadingIndicator }
+        : {};
     return (
         <Layout>
             <Modal 
@@ -19,10 +29,11 @@ export default ({ isOpen, onCloseModal, children, title }: ModalProps) => {
             >
                 <Layout style={styles.modalContainer}> 
                     <Text style={styles.title}>{title}</Text> 
-                    {children}      
-                    <Button 
+                    {children}    
+                    <Button
                         onPress={() => onCloseModal(true)} 
                         style={styles.confirmButton}
+                        {...buttonProps}
                     >
                         CONFIRM
                     </Button>
@@ -38,6 +49,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         lineHeight: 24,
         marginBottom: 20
+    },
+    indicator: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',

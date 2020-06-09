@@ -1,55 +1,62 @@
-import React from 'react';
-import { SafeAreaView, View } from 'react-native';
-import { useSelector } from 'react-redux';
-import { TopNavigation } from '../../components';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { TopNavigation, Modal } from '../../components';
 import { TrackList } from '../../components';
-
-/* const tracks = [
-    {
-        artist: "ABBA",
-        id: "0GjEhVFGZW8afUYGChu3Rr",
-        type: 'spotify',
-        image: "https://i.scdn.co/image/ab67616d0000485170f7a1b35d5165c85b95a0e0",
-        name: "Dancing Queen",
-    },
-    {
-        artist: "ABBA",
-        id: "0GjEhVFGZW8afUYGChu3Rr",
-        type: 'spotify',
-        image: "https://i.scdn.co/image/ab67616d0000485170f7a1b35d5165c85b95a0e0",
-        name: "Dancing Queen 2",
-    }
-] */
+import { Spinner } from '@ui-kitten/components';
+import { GET_PARTY_ACTIONS } from '../../reducers/queue/constants';
+import QRCode from 'react-native-qrcode-svg';
 
 interface QueueProps {
     navigation: any
 };
 
 export default ({ navigation }: QueueProps) => {
-    const { roomName, tracks } = useSelector((state: any) => state.queue);
+    const { name, tracks, _id, loadingGetParty } = useSelector((state: any) => state.queue);
+    const [isShareModalOpen, setShareModalOpen] = useState(false);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch({
+            type: GET_PARTY_ACTIONS.saga,
+            urlParams: {
+                id: _id
+            }
+        })
+    }, []);
 
     const rightControls = [
         {
-            icon: 'plus',
+            icon: 'search-outline',
             onPress: () => navigation.navigate('Search')
         },
         {
             icon: 'radio-outline',
             onPress: () => navigation.navigate('Settings')
+        },
+        {
+            icon: 'share-outline',
+            onPress: () => setShareModalOpen(true)
         }
     ]
 
     return (
         <SafeAreaView>
+            <Modal
+                isOpen={isShareModalOpen}
+                title={'Share this queue'}
+                onCloseModal={() => setShareModalOpen(false)}
+            >
+                <QRCode value={_id} />
+            </Modal>
+
             <TopNavigation 
                 navigation={navigation} 
-                title={`${roomName}'s Queue`}
+                title={name ? `${name}'s Queue` : ''}
                 rightControls={rightControls}
             />
             <View>
-                <TrackList 
-                    tracks={tracks}
-                />
+                <TrackList tracks={tracks} />
             </View>
         </SafeAreaView>
     );

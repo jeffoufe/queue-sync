@@ -58,7 +58,7 @@ export default ({ navigation }: QueueProps) => {
                 <TrackList 
                     tracks={tracks}
                     accessory={{
-                        icon: 'list-outline',
+                        icon: 'plus',
                         onPress: (track) => {
                             onAddTrackToQueue(track);
                         }

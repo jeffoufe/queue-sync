@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         width: 35, 
         height: 35,
         marginLeft: 10,
-        marginRight: 4
+        marginRight: 5
     },
     icon: {
         height: 40,

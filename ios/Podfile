@@ -47,4 +47,10 @@ target 'app' do
 
   pod 'react-native-video', :path => '../node_modules/react-native-video'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
 end

@@ -1,6 +1,16 @@
 import { call, takeEvery, select, put } from 'redux-saga/effects'
 import { Track } from '../../components/TrackList';
-import { PLAY_TRACK, NEXT_SONG, POP_SONG, PREPEND_TO_QUEUE, INSTANT_PLAY_TRACK, PLAY_PAUSE_TRACK } from './constants';
+import { generateSaga } from '../../utils/';
+import { 
+    PLAY_TRACK, 
+    NEXT_SONG, 
+    POP_SONG, 
+    PREPEND_TO_QUEUE, 
+    INSTANT_PLAY_TRACK, 
+    PLAY_PAUSE_TRACK,
+    CREATE_PARTY_ACTIONS,
+    GET_PARTY_ACTIONS
+} from './constants';
 
 function* playSpotifyTrack(track: Track) {
     const spotify = yield select((state: any) => state.user.spotify);
@@ -130,3 +140,16 @@ function* nextSong() {
 export function* watchNextSong() {
     yield takeEvery(NEXT_SONG, nextSong)
 }
+
+export const watchCreateParty = generateSaga({
+    ...CREATE_PARTY_ACTIONS,
+    url: () => 'http://localhost:3000/parties',
+    method: 'POST',
+    responsePath: 'parties',
+})
+
+export const watchGetParty = generateSaga({
+    ...GET_PARTY_ACTIONS,
+    url: ({ id }: { id: string }) => `http://localhost:3000/parties/${id}`,
+    method: 'GET',
+})
