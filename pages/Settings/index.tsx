@@ -1,7 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, StyleSheet } from 'react-native';
-import { TopNavigation, SpotifyLogin } from '../../components';
-import { useDispatch, useSelector } from 'react-redux';
+import { TopNavigation, SpotifyLogin, DeezerLogin } from '../../components';
 
 interface SettingsProps {
     navigation: any
@@ -20,6 +19,7 @@ export default ({ navigation }: SettingsProps) => {
             />
             <View style={styles.container}>
                 <SpotifyLogin />
+                <DeezerLogin />
             </View>
         </SafeAreaView>
     )

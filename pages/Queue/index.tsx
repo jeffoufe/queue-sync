@@ -3,8 +3,8 @@ import { SafeAreaView, View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TopNavigation, Modal } from '../../components';
 import { TrackList } from '../../components';
-import { Spinner } from '@ui-kitten/components';
-import { GET_PARTY_ACTIONS } from '../../reducers/queue/constants';
+import { Track } from '../../components/TrackList';
+import { GET_PARTY_ACTIONS, DELETE_FROM_QUEUE_ACTIONS } from '../../reducers/queue/constants';
 import QRCode from 'react-native-qrcode-svg';
 
 interface QueueProps {
@@ -12,7 +12,7 @@ interface QueueProps {
 };
 
 export default ({ navigation }: QueueProps) => {
-    const { name, tracks, _id, loadingGetParty } = useSelector((state: any) => state.queue);
+    const { name, tracks, _id } = useSelector((state: any) => state.queue);
     const [isShareModalOpen, setShareModalOpen] = useState(false);
     const dispatch = useDispatch();
 
@@ -24,6 +24,16 @@ export default ({ navigation }: QueueProps) => {
             }
         })
     }, []);
+
+    const onDeleteTrackFromQueue = (track: any) => {
+        dispatch({
+            type: DELETE_FROM_QUEUE_ACTIONS.saga,
+            urlParams: {
+                id: _id,
+                trackId: track.id
+            }
+        })
+    }
 
     const rightControls = [
         {
@@ -56,7 +66,13 @@ export default ({ navigation }: QueueProps) => {
                 rightControls={rightControls}
             />
             <View>
-                <TrackList tracks={tracks} />
+                <TrackList 
+                    tracks={tracks}
+                    accessory={{
+                        icon: 'close-outline',
+                        onPress: onDeleteTrackFromQueue
+                    }} 
+                />
             </View>
         </SafeAreaView>
     );

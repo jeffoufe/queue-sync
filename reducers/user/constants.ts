@@ -6,6 +6,9 @@ export const SELECT_DEVICE_SPOTIFY = 'USER/SELECT_DEVICE_SPOTIFY';
 export const LOGOUT_SPOTIFY = 'USER/LOGOUT_SPOTIFY';
 export const GET_DEVICES_SPOTIFY = 'USER/GET_DEVICES_SPOTIFY';
 
+export const AUTHORIZE_DEEZER = 'USER/AUTHORIZE_DEEZER';
+export const LOGOUT_DEEZER = 'USER/LOGOUT_DEEZER';
+
 export const SCOPES = [
     'user-modify-playback-state',
     'user-read-currently-playing',
@@ -19,3 +22,13 @@ export const SCOPES = [
     'user-read-recently-played',
     'user-top-read'
 ];
+
+export const SCOPES_DEEZER = [
+    'basic_access',
+    'email',
+    'offline_access',
+    'manage_library',
+    'manage_community',
+    'delete_library',
+    'listening_history'
+]

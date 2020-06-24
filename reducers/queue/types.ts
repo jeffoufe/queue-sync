@@ -1,9 +1,23 @@
 import { 
-    ADD_TO_QUEUE, PREPEND_TO_QUEUE, POP_SONG, CREATE_PARTY_ACTIONS, PLAY_TRACK, INSTANT_PLAY_TRACK, PLAY_PAUSE_TRACK
+    ADD_TO_QUEUE_ACTIONS, 
+    DELETE_FROM_QUEUE_ACTIONS,
+    PREPEND_TO_QUEUE, 
+    POP_SONG, 
+    CREATE_PARTY_ACTIONS, 
+    PLAY_TRACK, 
+    INSTANT_PLAY_TRACK, 
+    PLAY_PAUSE_TRACK
 } from './constants';
 
 interface AddToQueueAction {
-    type: typeof ADD_TO_QUEUE,
+    type: typeof ADD_TO_QUEUE_ACTIONS.success,
+    payload: {
+        tracks: Array<any>
+    }
+}
+
+interface DeleteFromQueueAction {
+    type: typeof DELETE_FROM_QUEUE_ACTIONS.success,
     payload: {
         tracks: Array<any>
     }
@@ -52,6 +66,7 @@ export type QueueAction =
     | CreatePartyAction
     | PlayTrackAction
     | PlayPauseTrackAction
+    | DeleteFromQueueAction
 
 export interface QueueReducerState {
     tracks: Array<any>,

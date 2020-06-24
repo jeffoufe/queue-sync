@@ -2,22 +2,23 @@ import { UserAction, UserReducerState } from './types';
 import { REHYDRATE } from 'redux-persist';
 import { LOGOUT_SPOTIFY, AUTHORIZE_SPOTIFY_SUCCESS, AUTHORIZE_SPOTIFY_LOADING, SELECT_DEVICE_SPOTIFY } from './constants'
 
+const initialProviderState = {
+    accessToken: null,
+    expirationTime: null,
+    error: null,
+    loading: false
+};
+
 const initialState = {
     spotify: {
-        loading: true,
         refreshToken: null,
-        accessToken: null, //'BQCvprKpgy0YVgPnW7ZmVR2rLhZpKuXBrCHLTJCuZwNlxvzVFZ_EhsxP_ZEo8vakye3o5DlIK_Pkvqzm7wxmiuib88q9VvamyHz3Y-aKH3smgEdfjIEVpDfiVNerx0bCR_0RaNt7-rXYQPEWrZ6upxAuyZL0HxZowUaTcT4g2u6t5lLIgoe_UnBh_aLHlii5yVuh4zfdK6tpuJQx3Yq4erOCm-_FRp7AROj_lxls4Js6pEXsSvKpb2NGWK1hayaeRHycK026mT7q63I',
-        expirationTime: null,
         deviceID: null,
-        error: null,
-        devices: []
+        devices: [],
+        ...initialProviderState
     },
-    soundcloud: {
-        accessToken: null,
-        expirationTime: null,
-        error: null,
-        loading: false
-    }
+    soundcloud: initialProviderState,
+    youtube: initialProviderState,
+    deezer: initialProviderState
 }
 
 export default (state: UserReducerState = initialState, action: UserAction) => {
@@ -56,9 +57,9 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
                 spotify: initialState.spotify
             }
         case REHYDRATE:
-            const soundcloud = action.payload.soundcloud || state.soundcloud;
-            const spotify = action.payload.spotify || state.spotify;
             if (action.payload) {
+                const soundcloud = action.payload.soundcloud || state.soundcloud;
+                const spotify = action.payload.spotify || state.spotify;
                 return {
                     ...state,
                     soundcloud,

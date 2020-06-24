@@ -8,18 +8,21 @@ export interface Track {
     name: string,
     artist: string,
     isPlayed: boolean,
-    id: string
+    id: string,
+    type: string,
+    progress: number
 }
 
 interface TrackListProps {
     tracks: Array<Track>,
+    onPressPlay?: boolean,
     accessory?: {
         icon: string,
         onPress: (track?: Track) => void
     }
 }
 
-export default ({ tracks, accessory }: TrackListProps) => {
+export default ({ tracks, accessory, onPressPlay }: TrackListProps) => {
     const dispatch = useDispatch();
 
     const onInstantPlayTrack = (track: Track) => {
@@ -28,9 +31,10 @@ export default ({ tracks, accessory }: TrackListProps) => {
 
     const data = tracks.map((track: Track) => ({
         title: track.name,
+        progress: track.progress,
         description: track.artist,
         avatar: track.image,
-        onPress: () => onInstantPlayTrack(track),
+        onPress: () => onPressPlay ? onInstantPlayTrack(track) : ({}),
         ...(accessory 
             ? {
                 accessory: {

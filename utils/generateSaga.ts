@@ -9,9 +9,10 @@ interface Actions {
 }
 
 interface Saga extends Actions {
-    url: string,
+    url: (params?: Object) => string,
     method: "PUT" | "GET" | "DELETE" | "POST" | "PATCH",
     params?: Object,
+    streaming?: boolean,
     responsePath: string,
 }
 
@@ -25,10 +26,12 @@ interface Action {
 export default (saga: Saga) => {
     const sagaFn = function* (action: Action) {
         yield put({ type: saga.loading })
+        const { onDownloadProgress } = saga;
         const response = yield axios({
             method: saga.method,
             url: saga.url(action.urlParams),
-            data: action && action.payload ? action.payload : {}
+            data: action && action.payload ? action.payload : {},
+            onDownloadProgress
         })
         if (response.status >= 400) {
             yield put({ type: saga.error, payload: { error: response.error } });

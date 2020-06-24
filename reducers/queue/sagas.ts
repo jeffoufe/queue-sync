@@ -9,8 +9,14 @@ import {
     INSTANT_PLAY_TRACK, 
     PLAY_PAUSE_TRACK,
     CREATE_PARTY_ACTIONS,
-    GET_PARTY_ACTIONS
+    GET_PARTY_ACTIONS,
+    ADD_TO_QUEUE_ACTIONS,
+    DELETE_FROM_QUEUE_ACTIONS,
+    CREATE_SOUND_OBJECT
 } from './constants';
+
+// const domain = 'http://node-express-env-2.eba-ppfp3jba.us-east-2.elasticbeanstalk.com'
+const domain = 'http://localhost:3000';
 
 function* playSpotifyTrack(track: Track) {
     const spotify = yield select((state: any) => state.user.spotify);
@@ -45,9 +51,31 @@ function* playSoundCloudTrack(track: any) {
     }
 }
 
+function* playYouTubeTrack(track: any) {
+    const { soundObject, id, progress, file } = track;
+    const { _id } = yield select((state: any) => state.queue);
+    if (progress && progress !== 100 || !file) {
+        alert('File is not ready yet');
+    } else {
+        try {
+            if (!soundObject['_loaded']) {
+                yield soundObject.loadAsync({ uri: `${domain}/parties/${_id}/${id}/stream` })
+            }
+            yield soundObject.setStatusAsync({ shouldPlay: true })
+        } catch (error) {
+            alert(error);
+        }
+    }
+}
+
 function* playTrack() {
     const { tracks } = yield select((state: any) => state.queue);
-    const track = tracks[0];
+    let track = tracks[0];
+    if (!track.soundObject) {
+        yield put({ type: CREATE_SOUND_OBJECT })
+        const queue = yield select((state: any) => state.queue);
+        track = queue.tracks[0];
+    }
     let playFn;
     switch(track.type) {
         case 'spotify':
@@ -55,6 +83,9 @@ function* playTrack() {
             break;
         case 'soundcloud':
             playFn = playSoundCloudTrack;
+            break;
+        case 'youtube':
+            playFn = playYouTubeTrack;
             break;
         default:
             break;
@@ -78,18 +109,23 @@ export function* watchPlayTrack() {
     yield takeEvery(PLAY_TRACK, playTrack)
 }
 
-function* stopSoundCloudTrack() {
+function* pauseSoundCloudTrack(isFinished: boolean) {
     const { tracks } = yield select((state: any) => state.queue);
     const currentTrack = tracks[0];
     try {
         yield currentTrack.soundObject.pauseAsync();
-        // yield currentTrack.soundObject.unloadAsync();
+        if (isFinished) {
+            yield currentTrack.soundObject.unloadAsync();
+            if (isFinished) {
+                yield call(popTrack);
+            }
+        }
     } catch (e) {
         console.log('Sound not loaded');
     }
 }
 
-function* stopSpotifyTrack() {
+function* pauseSpotifyTrack(isFinished: boolean) {
     const spotify = yield select((state: any) => state.user.spotify);
     if (spotify) {
         yield fetch(
@@ -101,21 +137,34 @@ function* stopSpotifyTrack() {
                 }
             }
         );
+        if (isFinished) {
+            yield call(popTrack);
+        }
     }
 }
 
-function* pauseCurrentTrack() {
+function* pauseCurrentTrack(isFinished = false) {
     const { tracks } = yield select((state: any) => state.queue);
     const currentTrack = tracks[0];
     switch (currentTrack.type) {
         case 'soundcloud':
-            yield call(stopSoundCloudTrack);
+        case 'youtube':
+            yield call(pauseSoundCloudTrack, isFinished);
             break;
         case 'spotify':
-            yield call(stopSpotifyTrack);
+            yield call(pauseSpotifyTrack, isFinished);
             break;
             
     }
+}
+
+function* popTrack() {
+    const { _id, tracks } = yield select((state: any) => state.queue);
+    const currentTrack = tracks[0];
+    yield fetch(
+        `${domain}/parties/${_id}/track/${currentTrack.id}`, 
+        { method: 'DELETE' }
+    )
 }
 
 function* playPauseCurrentTrack() {
@@ -132,7 +181,7 @@ export function* watchPlayPauseCurrentTrack() {
 }
 
 function* nextSong() {
-    yield call(pauseCurrentTrack)
+    yield call(pauseCurrentTrack, true)
     yield put({ type: POP_SONG });
     yield put({ type: PLAY_TRACK });
 }
@@ -143,13 +192,25 @@ export function* watchNextSong() {
 
 export const watchCreateParty = generateSaga({
     ...CREATE_PARTY_ACTIONS,
-    url: () => 'http://localhost:3000/parties',
+    url: () => `${domain}/parties`,
     method: 'POST',
     responsePath: 'parties',
 })
 
 export const watchGetParty = generateSaga({
     ...GET_PARTY_ACTIONS,
-    url: ({ id }: { id: string }) => `http://localhost:3000/parties/${id}`,
+    url: ({ id }: { id: string }) => `${domain}/parties/${id}`,
     method: 'GET',
+})
+
+export const watchAddToQueue = generateSaga({
+    ...ADD_TO_QUEUE_ACTIONS,
+    url: ({ id }: { id: string }) => `${domain}/parties/${id}/track`,
+    method: 'POST',
+})
+
+export const watchDeleteFromQueue = generateSaga({
+    ...DELETE_FROM_QUEUE_ACTIONS,
+    url: ({ id, trackId }: { id: string, trackId: string }) => `${domain}/parties/${id}/track/${trackId}`,
+    method: 'DELETE'
 })

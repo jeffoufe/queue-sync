@@ -7,7 +7,9 @@ import {
     AUTHORIZE_SPOTIFY_SUCCESS,
     AUTHORIZE_SPOTIFY,
     GET_DEVICES_SPOTIFY,
-    SCOPES
+    SCOPES,
+    AUTHORIZE_DEEZER,
+    SCOPES_DEEZER
 } from './constants';
 
 const scopes = SCOPES.join(' ');
@@ -49,33 +51,34 @@ function* authorizeSpotify() {
           encodeURIComponent(AuthSession.getRedirectUrl()),
     })
 
-    const credsB64 = btoa(`${credentials.clientId}:${credentials.clientSecret}`);
+    if (result.params.code) {
+        const credsB64 = btoa(`${credentials.clientId}:${credentials.clientSecret}`);
+        const tokenResponse = yield fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${credsB64}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=authorization_code&code=${result.params.code}&redirect_uri=${
+                AuthSession.getRedirectUrl()
+            }`,
+        });
 
-    const tokenResponse = yield fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-            Authorization: `Basic ${credsB64}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `grant_type=authorization_code&code=${result.params.code}&redirect_uri=${
-            AuthSession.getRedirectUrl()
-        }`,
-    });
+        const tokenResponseJSON = yield tokenResponse.json();
 
-    const tokenResponseJSON = yield tokenResponse.json();
+        Clipboard.setString(`${tokenResponseJSON.access_token}`);
 
-    Clipboard.setString(`${tokenResponseJSON.access_token}`);
+        yield put({ 
+            type: AUTHORIZE_SPOTIFY_LOADING, 
+            payload: {
+                accessToken: tokenResponseJSON.access_token,
+                refreshToken: tokenResponseJSON.refresh_token,
+                expirationTime: new Date().getTime() + tokenResponseJSON['expires_in'] * 1000
+            }
+        });
 
-    yield put({ 
-        type: AUTHORIZE_SPOTIFY_LOADING, 
-        payload: {
-            accessToken: tokenResponseJSON.access_token,
-            refreshToken: tokenResponseJSON.refresh_token,
-            expirationTime: new Date().getTime() + tokenResponseJSON['expires_in'] * 1000
-        }
-    });
-
-    yield call(getAvailableDevices);
+        yield call(getAvailableDevices);
+    }
 }
 
 export function* watchAuthorize() {
@@ -84,4 +87,33 @@ export function* watchAuthorize() {
 
 export function* watchGetAvailableDevices() {
     yield takeEvery(GET_DEVICES_SPOTIFY, getAvailableDevices)
+}
+
+function* authorizeDeezer() {
+    const result = yield AuthSession.startAsync({
+        authUrl:
+            'https://connect.deezer.com/oauth/auth.php' +
+            '?response_type=token' +
+            `?perms=${SCOPES_DEEZER.join(',')}` +
+            '&app_id=420362' +
+            '&redirect_uri=' +
+            encodeURIComponent(AuthSession.getRedirectUrl()),
+    });
+
+    if (result.params.code) {
+        const tokenResponse = yield fetch(
+            'https://connect.deezer.com/oauth/access_token.php' +
+            '&app_id=420362' +
+            'secret=dd9c9e360947ba0e36797752a1ba007a' +
+            `&code=${result.params.code}`
+        );
+    
+        const tokenResponseJSON = yield tokenResponse.json();
+        console.log(tokenResponseJSON.access_token);
+    }
+
+}
+
+export function* watchAuthorizeDeezer() {
+    yield takeEvery(AUTHORIZE_DEEZER, authorizeDeezer)
 }

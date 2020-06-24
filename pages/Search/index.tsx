@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TrackList, TopNavigation, DropdownModal } from '../../components';
 import { CHANGE_PROVIDER } from '../../reducers/tracks/constants';
 import { PROVIDERS, FETCH_TRACKS } from '../../reducers/tracks/constants';
-import { ADD_TO_QUEUE, PLAY_TRACK, NEXT_SONG } from '../../reducers/queue/constants';
+import { PLAY_TRACK, NEXT_SONG, ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
 
 interface QueueProps {
     navigation: any
@@ -12,6 +12,7 @@ interface QueueProps {
 
 export default ({ navigation }: QueueProps) => {
     const [ isModalOpen, setModalOpen ] = useState(true);
+    const { _id } = useSelector((state: any) => state.queue);
     const tracksReducer = useSelector((state: any) => state.tracks);
     const { currentProviderIndex } = tracksReducer;
     const provider = PROVIDERS[currentProviderIndex]. toLowerCase();
@@ -22,11 +23,11 @@ export default ({ navigation }: QueueProps) => {
         dispatch({ type: FETCH_TRACKS, payload: { search } })
     }
     
-    
     const onAddTrackToQueue = (track: any) => {
         dispatch({
-            type: ADD_TO_QUEUE,
-            payload: { tracks: [track] }
+            type: ADD_TO_QUEUE_ACTIONS.saga,
+            payload: { track },
+            urlParams: { id: _id }
         })
     }
 
@@ -57,6 +58,7 @@ export default ({ navigation }: QueueProps) => {
             <View>
                 <TrackList 
                     tracks={tracks}
+                    onPressPlay
                     accessory={{
                         icon: 'plus',
                         onPress: (track) => {

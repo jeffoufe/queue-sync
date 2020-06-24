@@ -5,6 +5,7 @@ import { Icon, ListItem, List, Avatar } from '@ui-kitten/components';
 interface ListItemProps {
     title: string,
     description?: string,
+    progress?: number,
     icon?: string,
     avatar?: string
     onPress?: () => void,
@@ -18,7 +19,7 @@ interface ListProps {
     data: Array<ListItemProps>
 };
 
-const renderItem = ({ item: { icon, avatar, title, description, onPress, accessory }}: { item: ListItemProps }) => {
+const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }}: { item: ListItemProps }) => {
     const renderIcon = (style: any) => {
         if (icon) {
             return <Icon {...style} name={icon} height={25} />;
@@ -30,6 +31,9 @@ const renderItem = ({ item: { icon, avatar, title, description, onPress, accesso
     }
 
     const renderItemAccessory = (style: any) => {
+        if (progress && progress != 100) {
+            return <View><Text>{`${Math.round(progress)}%`}</Text></View>;
+        }
         if (accessory) {
             const onPress = (e: GestureResponderEvent) => {
                 e.stopPropagation();

@@ -51,10 +51,7 @@ export default () => {
                         status='basic'
                         size='small'
                         style={styles.refreshButton} 
-                        onPress={() => {
-                            
-                            onPressRefreshButton();
-                        }}
+                        onPress={onPressRefreshButton}
                     >
                         REFRESH DEVICES
                     </Button>

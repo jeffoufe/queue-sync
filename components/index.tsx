@@ -17,4 +17,5 @@ export { default as Search } from './Search';
 export { default as Input } from './Input';
 export { default as TopNavigation } from './TopNavigation';
 export { default as SpotifyLogin } from './SpotifyLogin';
+export { default as DeezerLogin } from './DeezerLogin';
 export { default as QRScanner } from './QRScanner';

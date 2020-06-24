@@ -1,12 +1,15 @@
 import { QueueAction, QueueReducerState } from './types';
+import { Audio } from 'expo-av';
 import { 
-    ADD_TO_QUEUE, 
+    ADD_TO_QUEUE_ACTIONS, 
+    DELETE_FROM_QUEUE_ACTIONS,
     PREPEND_TO_QUEUE, 
     CREATE_PARTY_ACTIONS, 
     POP_SONG, 
     INSTANT_PLAY_TRACK, 
     PLAY_PAUSE_TRACK,
-    GET_PARTY_ACTIONS
+    GET_PARTY_ACTIONS,
+    CREATE_SOUND_OBJECT
 } from './constants'
 
 const initialState = {
@@ -45,16 +48,25 @@ export default (state: QueueReducerState = initialState, action: QueueAction) =>
                 tracks: action.payload.tracks,
                 loadingGetParty: false
             }
+        case CREATE_SOUND_OBJECT:
+            return {
+                ...state,
+                tracks: [
+                    { ...track, soundObject: new Audio.Sound() },
+                    ...rest 
+                ]
+            }
         case PREPEND_TO_QUEUE:
             return {
                 ...state,
                 tracks: [...action.payload.tracks, ...state.tracks.slice(1)],
             }
-        case ADD_TO_QUEUE:
+        case ADD_TO_QUEUE_ACTIONS.success:
+        case DELETE_FROM_QUEUE_ACTIONS.success:
             return { 
                 ...state,
-                tracks: [...state.tracks, ...action.payload.tracks],
-            }
+                tracks: action.payload.tracks,
+            };
         case PLAY_PAUSE_TRACK:
             return {
                 ...state,

@@ -22,7 +22,7 @@ function* fetchTracks(action: FetchTracksAction) {
     const { currentProviderIndex } = yield select((state: any) => state.tracks);
     const provider = PROVIDERS[currentProviderIndex].toLowerCase();
     const providerObject = yield select((state: any) => state.user[provider])
-    if (providerObject.accessToken || provider === 'soundcloud') {
+    if (providerObject.accessToken || provider === 'soundcloud' || provider === 'youtube') {
         yield put({ type: FETCH_TRACKS_LOADING, payload: { search, provider } });
         const response = yield fetch(
             SEARCH_URLS[currentProviderIndex](search),

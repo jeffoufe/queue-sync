@@ -12,7 +12,8 @@ const initialProviderState = {
 const initialState = {
     currentProviderIndex: 1,
     spotify: initialProviderState,
-    soundcloud: initialProviderState
+    soundcloud: initialProviderState,
+    youtube: initialProviderState
 }
 
 export default (state: TracksReducerState = initialState, action: TracksAction) => {

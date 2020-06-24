@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { ListItem, Icon } from '@ui-kitten/components';
 import { TrackImage } from '..';
@@ -8,7 +8,7 @@ import { Track } from '../TrackList';
 import { PLAY_PAUSE_TRACK, NEXT_SONG } from '../../reducers/queue/constants';
 
 interface PlayerTrackImageProps {
-    image: string
+    track: Track
 };
 
 const renderItemAccessory = (track: Track, onPressPlay: () => void, onPressNext: () => void, hasNext: boolean) => (
@@ -18,7 +18,7 @@ const renderItemAccessory = (track: Track, onPressPlay: () => void, onPressNext:
     </View>
 );
 
-const PlayerTrackImage = ({ image }: PlayerTrackImageProps) => (
+const PlayerTrackImage = ({ track: { image } }: PlayerTrackImageProps) => (
     <View style={styles.icon}>
         {image && <TrackImage image={image} />}
     </View>
@@ -35,7 +35,7 @@ export default () => {
     const playerProps = tracks[0] 
         ? { 
             accessoryRight: () => renderItemAccessory(tracks[0], onPressPlay, onPressNext, tracks.length > 1),
-            accessoryLeft: () => <PlayerTrackImage image={tracks[0].image} />
+            accessoryLeft: () => <PlayerTrackImage track={tracks[0]} />
         }
         : {};
 
@@ -52,6 +52,10 @@ export default () => {
 const styles = StyleSheet.create({
     listItem: {
         marginLeft: 5
+    },
+    youtubePlayer: {
+        height: 35,
+        width: 35
     },
     icon: {
         marginLeft: 5,
