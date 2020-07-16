@@ -6,7 +6,10 @@ import {
     CREATE_PARTY_ACTIONS, 
     PLAY_TRACK, 
     INSTANT_PLAY_TRACK, 
-    PLAY_PAUSE_TRACK
+    PLAY_PAUSE_TRACK,
+    START_TIMER,
+    PAUSE_TIMER,
+    RESET_TIMER
 } from './constants';
 
 interface AddToQueueAction {
@@ -58,6 +61,26 @@ interface PopSongAction {
     payload: {}
 }
 
+interface StartTimerAction {
+    type: typeof START_TIMER,
+    payload: {
+        timerId: number,
+        startTime: number
+    }
+}
+
+interface PauseTimerAction {
+    type: typeof PAUSE_TIMER,
+    payload: {
+        remainingTime: number
+    }
+}
+
+interface ResetTimerAction {
+    type: typeof RESET_TIMER,
+    payload: {}
+}
+
   
 export type QueueAction = 
     AddToQueueAction
@@ -67,6 +90,9 @@ export type QueueAction =
     | PlayTrackAction
     | PlayPauseTrackAction
     | DeleteFromQueueAction
+    | StartTimerAction
+    | PauseTimerAction
+    | ResetTimerAction
 
 export interface QueueReducerState {
     tracks: Array<any>,

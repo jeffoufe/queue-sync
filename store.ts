@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { persistStore, persistReducer } from 'redux-persist';
-import { AsyncStorage } from 'react-native'
+// import { AsyncStorage } from 'react-native'
+import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { tracksReducer, userReducer, queueReducer, routerReducer } from './reducers';
 import { watchFetchTracks } from './reducers/tracks/sagas';
@@ -12,7 +13,7 @@ import logger from 'redux-logger'
 
 const persistConfig = {
     key: 'root',
-    storage: AsyncStorage,
+    storage,
     whitelist: ['user'],
     stateReconciler: autoMergeLevel2 // see "Merge Process" section for details.
 };

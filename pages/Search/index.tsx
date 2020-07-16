@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TrackList, TopNavigation, DropdownModal } from '../../components';
 import { CHANGE_PROVIDER } from '../../reducers/tracks/constants';
 import { PROVIDERS, FETCH_TRACKS } from '../../reducers/tracks/constants';
-import { PLAY_TRACK, NEXT_SONG, ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
+import {  ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
 
 interface QueueProps {
     navigation: any

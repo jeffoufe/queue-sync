@@ -67,8 +67,9 @@ interface SoundcloudObject {
 interface RehydrateAction {
     type: typeof REHYDRATE,
     payload: {
-        spotify: SpotifyObject,
-        soundcloud: SoundcloudObject
+        user: {
+            spotify: SpotifyObject
+        }
     }
 }
 

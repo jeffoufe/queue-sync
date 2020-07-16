@@ -11,6 +11,7 @@ interface NewHomeProps {
 export default ({ navigation }: NewHomeProps) => {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [roomName, setRoomName] = useState('');
+    const [userName, setUserName] = useState('');
     const [isQRScannerVisible, setQRScannerVisible] = useState(false);
     const { loading } = useSelector((state: any) => state.queue)
     const dispatch = useDispatch();
@@ -25,7 +26,10 @@ export default ({ navigation }: NewHomeProps) => {
                     setShowCreationModal(false);
                     navigation.navigate('Queue');
                 },
-                payload: { name: roomName }
+                payload: { 
+                    name: roomName,
+                    hostName: userName
+                }
             });
         }
     }
@@ -52,6 +56,10 @@ export default ({ navigation }: NewHomeProps) => {
                 <Input
                     placeholder='Party name...'
                     onChange={setRoomName}
+                />
+                <Input
+                    placeholder='Admin name... (optional)'
+                    onChange={setUserName}
                 />
             </Modal>
         </SafeAreaView>

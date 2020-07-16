@@ -65,6 +65,7 @@ export interface SpotifyTrack {
     },
     id: string
     name: string,
+    duration_ms: number,
     artists: Array<{
         name: string
     }>

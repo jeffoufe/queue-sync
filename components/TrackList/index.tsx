@@ -8,6 +8,7 @@ export interface Track {
     name: string,
     artist: string,
     isPlayed: boolean,
+    duration?: number,
     id: string,
     type: string,
     progress: number

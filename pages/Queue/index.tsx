@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TopNavigation, Modal } from '../../components';
 import { TrackList } from '../../components';
-import { Track } from '../../components/TrackList';
 import { GET_PARTY_ACTIONS, DELETE_FROM_QUEUE_ACTIONS } from '../../reducers/queue/constants';
 import QRCode from 'react-native-qrcode-svg';
 
 interface QueueProps {
-    navigation: any
+    navigation: any,
 };
 
 export default ({ navigation }: QueueProps) => {
@@ -16,13 +15,33 @@ export default ({ navigation }: QueueProps) => {
     const [isShareModalOpen, setShareModalOpen] = useState(false);
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    const getParty = () => {
         dispatch({
             type: GET_PARTY_ACTIONS.saga,
             urlParams: {
                 id: _id
             }
-        })
+        });
+    }
+
+    useEffect(() => {
+        getParty();
+        return () => Alert.alert(
+            "Leave the party",
+            "As the party host, the music will stop if you leave the party",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                { 
+                    text: "OK", 
+                }
+            ],
+            { cancelable: false }
+        );
+      
+        // setInterval(getParty, 1000);
     }, []);
 
     const onDeleteTrackFromQueue = (track: any) => {
@@ -50,6 +69,13 @@ export default ({ navigation }: QueueProps) => {
         }
     ]
 
+    const NoTrack = () => (
+        <View>
+            <Text>No track in the queue</Text>
+            <Text>You can add a track by tapping the search icon</Text>
+        </View>
+    );
+
     return (
         <SafeAreaView>
             <Modal
@@ -64,15 +90,24 @@ export default ({ navigation }: QueueProps) => {
                 navigation={navigation} 
                 title={name ? `${name}'s Queue` : ''}
                 rightControls={rightControls}
+                leftControl={{
+                    icon: 'arrow-back-outline',
+                    onPress: navigation.goBack
+                }}
             />
             <View>
-                <TrackList 
-                    tracks={tracks}
-                    accessory={{
-                        icon: 'close-outline',
-                        onPress: onDeleteTrackFromQueue
-                    }} 
-                />
+                {!!tracks.length 
+                    ? (
+                        <TrackList 
+                            tracks={tracks}
+                            accessory={{
+                                icon: 'close-outline',
+                                onPress: onDeleteTrackFromQueue
+                            }} 
+                        />
+                    )
+                    : <NoTrack />
+                }
             </View>
         </SafeAreaView>
     );

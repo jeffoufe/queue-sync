@@ -38,6 +38,7 @@ export const formatSpotifyTracks = (response: SpotifyTracksResponse) => {
         id: `${track.id}`,
         isPlayed: false,
         type: 'spotify',
+        duration: track['duration_ms'],
         artist: track.artists.map((artist: SpotifyArtist) => artist.name).join(', '),
     }))
 };
@@ -57,7 +58,7 @@ export const formatSoundCloudTracks = (response: SoundCloudTracksResponse) => {
                 id: `${track.id}`,
                 type: 'soundcloud',
                 isPlayed: false,
-                url: `${stream.url}?client_id=ort1mNnec7uBq15sMpCNm5oPUYUpu1oV`
+                url: `${stream.url}?client_id=daZlxLpZTSroZXmrbXa6hiLt8ub6Qm7X`
             }
         ]
     }, []);

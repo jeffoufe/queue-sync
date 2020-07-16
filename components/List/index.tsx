@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import { StyleSheet, View, Text, GestureResponderEvent } from 'react-native';
 import { Icon, ListItem, List, Avatar } from '@ui-kitten/components';
 
 interface ListItemProps {
@@ -32,7 +32,13 @@ const renderItem = ({ item: { icon, avatar, title, description, progress, onPres
 
     const renderItemAccessory = (style: any) => {
         if (progress && progress != 100) {
-            return <View><Text>{`${Math.round(progress)}%`}</Text></View>;
+            return (
+                <View>
+                    <Text>
+                        {`${Math.round(progress)}%`}
+                    </Text>
+                </View>
+            );
         }
         if (accessory) {
             const onPress = (e: GestureResponderEvent) => {

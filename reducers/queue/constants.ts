@@ -18,6 +18,9 @@ export const POP_SONG = 'QUEUE/POP_SONG';
 export const INSTANT_PLAY_TRACK = 'QUEUE/INSTANT_PLAY_TRACK';
 export const PLAY_PAUSE_TRACK = 'QUEUE/PLAY_PAUSE_TRACK';
 export const CREATE_SOUND_OBJECT = 'QUEUE/CREATE_SOUND_OBJECT';
+export const START_TIMER = 'QUEUE/START_TIMER';
+export const PAUSE_TIMER = 'QUEUE/PAUSE_TIMER';
+export const RESET_TIMER = 'QUEUE/RESET_TIMER';
 
 export const CREATE_PARTY_ACTIONS = generateActions('QUEUE', 'CREATE_PARTY');
 export const GET_PARTY_ACTIONS = generateActions('QUEUE', 'GET_PARTY');

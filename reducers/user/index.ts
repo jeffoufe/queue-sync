@@ -1,6 +1,11 @@
 import { UserAction, UserReducerState } from './types';
 import { REHYDRATE } from 'redux-persist';
-import { LOGOUT_SPOTIFY, AUTHORIZE_SPOTIFY_SUCCESS, AUTHORIZE_SPOTIFY_LOADING, SELECT_DEVICE_SPOTIFY } from './constants'
+import { 
+    LOGOUT_SPOTIFY, 
+    AUTHORIZE_SPOTIFY_SUCCESS, 
+    AUTHORIZE_SPOTIFY_LOADING, 
+    SELECT_DEVICE_SPOTIFY
+} from './constants'
 
 const initialProviderState = {
     accessToken: null,
@@ -58,12 +63,12 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
             }
         case REHYDRATE:
             if (action.payload) {
-                const soundcloud = action.payload.soundcloud || state.soundcloud;
-                const spotify = action.payload.spotify || state.spotify;
                 return {
                     ...state,
-                    soundcloud,
-                    spotify
+                    spotify: {
+                        ...state.spotify,
+                        ...action.payload.user.spotify
+                    }
                 }
             } else { 
                 return state;

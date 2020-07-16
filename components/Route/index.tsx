@@ -19,5 +19,5 @@ export default ({ navigation, Component }: RouteProps) => {
         })
     }, [])
 
-    return <Component navigation={navigation} />
+    return <Component navigation={navigation} route={route.name} />
 } 

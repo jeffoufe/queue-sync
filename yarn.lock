@@ -5097,11 +5097,6 @@ escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-escape-string-regexp@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
-  integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
-
 escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
@@ -5298,6 +5293,13 @@ expo-av@^8.1.0:
     lodash "^4.17.15"
     nullthrows "^1.1.0"
 
+expo-background-fetch@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-8.3.0.tgz#9a848452ad1f39c4322f934b9950c461822376ed"
+  integrity sha512-chKvSyKER8tehssqmMRdyPBd9p3m98n2JLFj1GmHu+MLeqYrzCgYiJImC3H0sKzXCN0pDomUViVD/QLl5jOK2A==
+  dependencies:
+    expo-task-manager "~8.3.0"
+
 expo-barcode-scanner@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/expo-barcode-scanner/-/expo-barcode-scanner-8.1.0.tgz#2f1504465725673a18453d976062b3aab55dd867"
@@ -5399,6 +5401,13 @@ expo-sqlite@~8.1.0:
     "@expo/websql" "^1.0.1"
     "@types/websql" "^0.0.27"
     lodash "^4.17.15"
+
+expo-task-manager@~8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-8.3.0.tgz#e8a9dba98087de5c2c851177149411e85e1d1a7f"
+  integrity sha512-hE7DJ/DrCmMQk43erM537UjzAcuLZkwMKMMkuhmnu6gpdjkkGERGUX5Jx8AWmrspVOsK/CO1BZp74+3LJj4sMg==
+  dependencies:
+    unimodules-app-loader "~1.2.0"
 
 expo-updates@~0.1.0:
   version "0.1.1"
@@ -10564,7 +10573,7 @@ prop-types-exact@^1.2.0:
     object.assign "^4.1.0"
     reflect.ownkeys "^0.2.0"
 
-prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -10985,21 +10994,6 @@ react-native-web@~0.11.7:
     normalize-css-color "^1.0.2"
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.4"
-
-react-native-webview@^10.3.1:
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.3.1.tgz#04a2b17a37daf04575b3abd10b1fb29d2c154c6f"
-  integrity sha512-Ac0v4lFaJl5P/haLook+UIKMW4Ru5xg0+AdxD2oJRB2TPgdqoATziYNU0LBMjntlxDp+DVzdr3fVDuLMdox0tg==
-  dependencies:
-    escape-string-regexp "2.0.0"
-    invariant "2.2.4"
-
-react-native-youtube@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-youtube/-/react-native-youtube-2.0.1.tgz#1b6275ca2c1db8e13539a59ccfda8ae8479b1590"
-  integrity sha512-CVzJyynKoEEMXHv/Nx+s8HdovnfVIZs0DIUjWUQsgEd+kbBubXJZTguCKj4WigI8SI1LJ0thF8SEGbdqW8oJkw==
-  dependencies:
-    prop-types "^15.5.0"
 
 react-native@~0.61.4:
   version "0.61.5"
@@ -12913,6 +12907,11 @@ unimodules-app-loader@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-1.0.1.tgz#4358195cfa4d6026c71c7365362acf047f252bb0"
   integrity sha512-GhPwdTp9WHRMRnM2ONQsHb0mciKU5tafohEX0+E4F7bSba89r+rJckWQnpDvHE7uyUaRtocLYcbk09vv2eg8ew==
+
+unimodules-app-loader@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-1.2.0.tgz#e3ab8942000b0a0ee3bef2faff7e7e276d84c86a"
+  integrity sha512-TZCFuyOfX/iVJf3uhy2WmGnQFUGgsfkVRzUb7mCxPTqqdyvqT7aXxCGM3gY+3Y8dPdCRGoG+EA2vrOe3aLU0qw==
 
 unimodules-barcode-scanner-interface@~5.1.0:
   version "5.1.0"

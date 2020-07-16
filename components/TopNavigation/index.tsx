@@ -17,8 +17,9 @@ interface TopNavigationProps {
   rightControls?: Array<TopNavigationControl>
 }
 
-const generateAction = (control: TopNavigationControl) => (
+const generateAction = (control: TopNavigationControl, index: number) => (
   <TopNavigationAction
+    key={`top-navigation-action-${index}`}
     icon={(props: IconProps) => <Icon {...props} name={control.icon} height={25} width={25} />}
     onPress={control.onPress}
   />
@@ -37,7 +38,7 @@ export default ({ title, rightControls, onSearch, leftControl }: TopNavigationPr
   if (rightControls) {
     props.accessoryRight = () => (
       <>
-        {rightControls.map((rightControl: TopNavigationControl) => generateAction(rightControl))}
+        {rightControls.map((rightControl: TopNavigationControl, index: number) => generateAction(rightControl, index))}
       </>
     );
   }

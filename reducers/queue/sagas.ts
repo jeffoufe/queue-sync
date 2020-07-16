@@ -1,5 +1,6 @@
 import { call, takeEvery, select, put } from 'redux-saga/effects'
 import { Track } from '../../components/TrackList';
+import { store } from '../../store';
 import { generateSaga } from '../../utils/';
 import { 
     PLAY_TRACK, 
@@ -12,13 +13,17 @@ import {
     GET_PARTY_ACTIONS,
     ADD_TO_QUEUE_ACTIONS,
     DELETE_FROM_QUEUE_ACTIONS,
-    CREATE_SOUND_OBJECT
+    CREATE_SOUND_OBJECT,
+    START_TIMER,
+    PAUSE_TIMER,
+    RESET_TIMER
 } from './constants';
 
-// const domain = 'http://node-express-env-2.eba-ppfp3jba.us-east-2.elasticbeanstalk.com'
-const domain = 'http://localhost:3000';
+const domain = 'http://node-express-env-2.eba-ppfp3jba.us-east-2.elasticbeanstalk.com'
+// const domain = 'http://localhost:3000';
 
 function* playSpotifyTrack(track: Track) {
+    const { timerId, remainingTime } = yield select((state: any) => state.queue);
     const spotify = yield select((state: any) => state.user.spotify);
     if (spotify) {
         yield fetch(
@@ -32,7 +37,27 @@ function* playSpotifyTrack(track: Track) {
                     uris: [`spotify:track:${track.id}`]
                 })
             }
-        );
+        ).then(() => {
+            if (timerId) {
+                window.clearTimeout(timerId)
+            }
+            store.dispatch({ 
+                type: START_TIMER, 
+                payload: {
+                    timerId: window.setTimeout(
+                        () => store.dispatch({ type: NEXT_SONG }), 
+                        remainingTime || track.duration
+                    ),
+                    startTime: Date.now()
+                }
+            });
+        });
+    }
+}
+
+const onPlaybackStatusUpdate = ({ didJustFinish }: any) => {
+    if (didJustFinish) {
+        store.dispatch({ type: NEXT_SONG });
     }
 }
 
@@ -44,6 +69,8 @@ function* playSoundCloudTrack(track: any) {
         const mp3Url = stream.url;
         if (!soundObject['_loaded']) {
             yield soundObject.loadAsync({ uri: mp3Url });
+            yield soundObject.setProgressUpdateIntervalAsync(1000)
+            yield soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
         }
         yield soundObject.playAsync();
     } catch (error) {
@@ -59,7 +86,8 @@ function* playYouTubeTrack(track: any) {
     } else {
         try {
             if (!soundObject['_loaded']) {
-                yield soundObject.loadAsync({ uri: `${domain}/parties/${_id}/${id}/stream` })
+                yield soundObject.loadAsync({ uri: `${domain}/parties/${_id}/${id}/stream` });
+                yield soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
             }
             yield soundObject.setStatusAsync({ shouldPlay: true })
         } catch (error) {
@@ -116,9 +144,7 @@ function* pauseSoundCloudTrack(isFinished: boolean) {
         yield currentTrack.soundObject.pauseAsync();
         if (isFinished) {
             yield currentTrack.soundObject.unloadAsync();
-            if (isFinished) {
-                yield call(popTrack);
-            }
+            yield call(popTrack);
         }
     } catch (e) {
         console.log('Sound not loaded');
@@ -126,6 +152,7 @@ function* pauseSoundCloudTrack(isFinished: boolean) {
 }
 
 function* pauseSpotifyTrack(isFinished: boolean) {
+    const { remainingTime, timerId, startTime } = yield select((state: any) => state.queue);
     const spotify = yield select((state: any) => state.user.spotify);
     if (spotify) {
         yield fetch(
@@ -138,7 +165,16 @@ function* pauseSpotifyTrack(isFinished: boolean) {
             }
         );
         if (isFinished) {
+            yield put({ type: RESET_TIMER });
             yield call(popTrack);
+        } else {
+            window.clearTimeout(timerId);
+            put({
+                type: PAUSE_TIMER,
+                payload: {
+                    remainingTime: remainingTime - (Date.now() - startTime)
+                } 
+            })
         }
     }
 }

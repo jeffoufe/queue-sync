@@ -9,13 +9,19 @@ import {
     INSTANT_PLAY_TRACK, 
     PLAY_PAUSE_TRACK,
     GET_PARTY_ACTIONS,
-    CREATE_SOUND_OBJECT
+    CREATE_SOUND_OBJECT,
+    START_TIMER,
+    PAUSE_TIMER,
+    RESET_TIMER
 } from './constants'
 
 const initialState = {
     tracks: [],
+    timerId: null,
+    startTime: null,
+    remainingTime: null,
     // _id: null,
-    _id: '5edf93e9f3b83fc495fb31b1',
+    _id: '5f0340f378f1160dfc5a0027',
     name: null,
     loadingCreateParty: false,
     loadingGetParty: false
@@ -81,6 +87,24 @@ export default (state: QueueReducerState = initialState, action: QueueAction) =>
             return {
                 ...state,
                 tracks: [{ ...rest[0], isPlayed: true }, ...rest.slice(1)]
+            }
+        case START_TIMER:
+            return {
+                ...state,
+                timerId: action.payload.timerId,
+                startTime: action.payload.startTime
+            }
+        case PAUSE_TIMER:
+            return {
+                ...state,
+                remainingTime: action.payload.remainingTime
+            }
+        case RESET_TIMER:
+            return {
+                ...state,
+                timerId: null,
+                startTime: null,
+                remainingTime: null
             }
         default:
             return state;
