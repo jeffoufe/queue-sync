@@ -25,7 +25,7 @@ export default ({ navigation }: QueueProps) => {
     }
 
     useEffect(() => {
-        getParty();
+        // getParty();
         return () => Alert.alert(
             "Leave the party",
             "As the party host, the music will stop if you leave the party",

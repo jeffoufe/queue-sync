@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         margin: 10
     },
     logoutButton: {
-        marginRight: 10
+        margin: 10
     },
     spotifyButton: {
         backgroundColor: '#20D760',
