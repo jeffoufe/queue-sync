@@ -6,6 +6,9 @@ export const mapping = {
     }
 }
 
+export { default as Content } from './Content';
+export { default as Layout } from './Layout';
+export { default as BottomMenu } from './BottomMenu';
 export { default as Route } from './Route';
 export { default as Player } from './Player';
 export { default as List } from './List';

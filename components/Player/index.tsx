@@ -62,7 +62,13 @@ export default () => {
 
 const styles = StyleSheet.create({
     listItem: {
-        marginLeft: 5
+        position: 'absolute',
+        bottom: 56,
+        width: '100%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F2F2F2',
+        borderTopWidth: 1,
+        borderTopColor: '#F2F2F2',
     },
     youtubePlayer: {
         height: 35,

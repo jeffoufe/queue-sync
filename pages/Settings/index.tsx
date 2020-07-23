@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, StyleSheet } from 'react-native';
-import { TopNavigation, SpotifyLogin, DeezerLogin } from '../../components';
+import { TopNavigation, SpotifyLogin, DeezerLogin, Content } from '../../components';
 
 interface SettingsProps {
     navigation: any
@@ -8,7 +8,7 @@ interface SettingsProps {
 
 export default ({ navigation }: SettingsProps) => {
     return (
-        <SafeAreaView>
+        <>
             <TopNavigation 
                 navigation={navigation} 
                 title='Settings'
@@ -17,11 +17,13 @@ export default ({ navigation }: SettingsProps) => {
                     onPress: navigation.goBack
                 }}
             />
-            <View style={styles.container}>
-                <SpotifyLogin />
-                <DeezerLogin />
-            </View>
-        </SafeAreaView>
+            <Content>
+                <View style={styles.container}>
+                    <SpotifyLogin />
+                    <DeezerLogin />
+                </View>
+            </Content>
+        </>
     )
 }
 

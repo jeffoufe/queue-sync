@@ -1,3 +1,3 @@
 export default (route: string) => ![
-    'NewHome'
+    'Home'
 ].includes(route)

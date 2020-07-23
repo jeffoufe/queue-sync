@@ -80,7 +80,7 @@ export default () => {
                                 onChange={onSelectDevice}
                             >
                                 {spotify.devices.map((device: SpotifyDeviceObject) => (
-                                    <Radio>{device.name}</Radio>
+                                    <Radio key={device.name}>{device.name}</Radio>
                                 ))}
                             </RadioGroup>
                         )

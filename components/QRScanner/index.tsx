@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { Button } from '@ui-kitten/components';
+import { CREATE_PARTY_ACTIONS } from '../../reducers/queue/constants';
+import { useDispatch } from 'react-redux';
 
-export default () => {
+interface QRScannerProps {
+    onClose: () => void,
+    navigation: any
+}
+
+export default ({ onClose }) => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         (async () => {
@@ -16,15 +24,17 @@ export default () => {
 
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        alert(data);
+        dispatch({
+            type: CREATE_PARTY_ACTIONS.success,
+            payload: {
+                _id: data
+            }
+        })
     };
 
-    if (hasPermission === null) {
-        return <Text>Requesting for camera permission</Text>;
-      }
-      if (hasPermission === false) {
+    if (hasPermission === false) {
         return <Text>No access to camera</Text>;
-      }
+    }
 
     return (
         <View
@@ -32,13 +42,13 @@ export default () => {
                 flex: 1,
                 flexDirection: 'column',
                 justifyContent: 'flex-end',
-            }
-        }>
+            }}
+        >
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                 style={StyleSheet.absoluteFillObject}
             />
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+            <Button onPress={onClose}>CANCEL</Button>
         </View>
-    )
+    );
 }

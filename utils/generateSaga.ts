@@ -1,4 +1,4 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery, select } from 'redux-saga/effects';
 import axios from 'axios'; 
 
 interface Actions {
@@ -12,6 +12,7 @@ interface Saga extends Actions {
     url: (params?: Object) => string,
     method: "PUT" | "GET" | "DELETE" | "POST" | "PATCH",
     params?: Object,
+    isSpotify?: boolean,
     streaming?: boolean,
     responsePath: string,
 }
@@ -26,13 +27,22 @@ interface Action {
 export default (saga: Saga) => {
     const sagaFn = function* (action: Action) {
         yield put({ type: saga.loading })
+        
+        const accessToken = yield select((state: any) => state.user.spotify.accessToken);
         const { onDownloadProgress } = saga;
+        
+        const headers = !saga.isSpotify && accessToken
+            ? {} 
+            : { Authorization: `Bearer ${accessToken}` } 
+
         const response = yield axios({
             method: saga.method,
             url: saga.url(action.urlParams),
             data: action && action.payload ? action.payload : {},
-            onDownloadProgress
+            onDownloadProgress,
+            headers
         })
+
         if (response.status >= 400) {
             yield put({ type: saga.error, payload: { error: response.error } });
         } else {

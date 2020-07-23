@@ -1,6 +1,5 @@
 import { put, takeEvery, select, call } from 'redux-saga/effects'
 import * as AuthSession from 'expo-auth-session';
-import { Clipboard } from 'react-native';
 import { 
     AUTHORIZE_SPOTIFY_ERROR, 
     AUTHORIZE_SPOTIFY_LOADING, 
@@ -9,7 +8,9 @@ import {
     GET_DEVICES_SPOTIFY,
     SCOPES,
     AUTHORIZE_DEEZER,
-    SCOPES_DEEZER
+    SCOPES_DEEZER,
+    REFRESH_SPOTIFY,
+    LOGOUT_SPOTIFY
 } from './constants';
 
 const scopes = SCOPES.join(' ');
@@ -39,6 +40,42 @@ function* getAvailableDevices() {
     }
 }
 
+function* refreshSpotify() {
+    const { refreshToken, expirationTime } = yield select((state: any) => state.user.spotify);
+    if (refreshToken && expirationTime < Date.now()) {
+        const credsB64 = btoa(`${credentials.clientId}:${credentials.clientSecret}`);
+        const tokenResponse = yield fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${credsB64}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+        });
+
+        const tokenResponseJSON = yield tokenResponse.json();
+
+        yield put({ 
+            type: AUTHORIZE_SPOTIFY_LOADING, 
+            payload: {
+                accessToken: tokenResponseJSON.access_token,
+                refreshToken: tokenResponseJSON.refresh_token,
+                expirationTime: new Date().getTime() + tokenResponseJSON['expires_in'] * 1000
+            }
+        });
+    }
+
+    /* if (Date.now() < expirationTime && !refreshToken) {
+        yield put({ 
+            type: LOGOUT_SPOTIFY
+        })
+    } */
+}
+
+export function* watchRefreshSpotify() {
+    yield takeEvery(REFRESH_SPOTIFY, refreshSpotify)
+}
+
 function* authorizeSpotify() {
     const result = yield AuthSession.startAsync({
         authUrl:
@@ -65,8 +102,6 @@ function* authorizeSpotify() {
         });
 
         const tokenResponseJSON = yield tokenResponse.json();
-
-        Clipboard.setString(`${tokenResponseJSON.access_token}`);
 
         yield put({ 
             type: AUTHORIZE_SPOTIFY_LOADING, 
@@ -109,7 +144,6 @@ function* authorizeDeezer() {
         );
     
         const tokenResponseJSON = yield tokenResponse.json();
-        console.log(tokenResponseJSON.access_token);
     }
 
 }

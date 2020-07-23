@@ -9,7 +9,7 @@ interface TopNavigationControl {
   onPress: () => void
 }
 
-interface TopNavigationProps {
+export interface TopNavigationProps {
   navigation: any,
   title?: string,
   onSearch?: (search: string) => void,

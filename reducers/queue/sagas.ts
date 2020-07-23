@@ -19,7 +19,7 @@ import {
     RESET_TIMER
 } from './constants';
 
-const domain = 'http://node-express-env-2.eba-ppfp3jba.us-east-2.elasticbeanstalk.com'
+const domain = 'http://node-express-env-3.eba-ppfp3jba.us-east-2.elasticbeanstalk.com/'
 // const domain = 'http://localhost:3000';
 
 function* playSpotifyTrack(track: Track) {

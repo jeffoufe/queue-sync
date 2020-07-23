@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { useRoute } from '@react-navigation/native';
-import { SET_ROUTE } from '../../reducers/router/constants';
+import { Layout } from '../../components';
+import { canSeePlayer } from '../../utils';
 
 interface RouteProps {
     navigation: any,
@@ -9,15 +9,15 @@ interface RouteProps {
 };
 
 export default ({ navigation, Component }: RouteProps) => {
-    const dispatch = useDispatch();
     const route = useRoute();
 
-    useEffect(() => {
-        dispatch({
-            type: SET_ROUTE,
-            payload: { route: route.name }
-        })
-    }, [])
+    if (canSeePlayer(route.name)) {
+        return (
+            <Layout navigation={navigation}>
+                <Component navigation={navigation} route={route.name} />
+            </Layout>
+        )
+    }
 
-    return <Component navigation={navigation} route={route.name} />
+    return <Component navigation={navigation} route={route.name} />;
 } 

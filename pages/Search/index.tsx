@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { TrackList, TopNavigation, DropdownModal } from '../../components';
+import { TrackList, TopNavigation, DropdownModal, Content } from '../../components';
 import { CHANGE_PROVIDER } from '../../reducers/tracks/constants';
 import { PROVIDERS, FETCH_TRACKS } from '../../reducers/tracks/constants';
 import {  ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
@@ -32,7 +31,7 @@ export default ({ navigation }: QueueProps) => {
     }
 
     return (
-        <SafeAreaView>
+        <>
             <TopNavigation 
                 onSearch={onSearch} 
                 navigation={navigation}
@@ -55,18 +54,16 @@ export default ({ navigation }: QueueProps) => {
                     dispatch({ type: CHANGE_PROVIDER, payload: { currentProviderIndex } })
                 }}
             />
-            <View>
+            <Content>
                 <TrackList 
                     tracks={tracks}
                     onPressPlay
                     accessory={{
                         icon: 'plus',
-                        onPress: (track) => {
-                            onAddTrackToQueue(track);
-                        }
+                        onPress: onAddTrackToQueue
                     }} 
                 />
-            </View>
-        </SafeAreaView>
+            </Content>
+        </>
     );
 }

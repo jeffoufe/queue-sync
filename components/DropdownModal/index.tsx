@@ -18,7 +18,7 @@ export default ({ options, onChange, isOpen, onCloseModal, title, selectedIndex 
             selectedIndex={selectedIndex}
         >
             {options.map((option: string) => (
-                <Radio>{option}</Radio>
+                <Radio key={option}>{option}</Radio>
             ))}
         </RadioGroup>
     </Modal>

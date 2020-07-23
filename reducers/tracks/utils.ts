@@ -31,16 +31,18 @@ export const formatYouTubeTracks = (response: any) => {
     }))
 };
 
+export const formatSpotifyTrack = (track: SpotifyTrack) => ({
+    image: track.album.images[track.album.images.length - 1].url,
+    name: track.name,
+    id: `${track.id}`,
+    isPlayed: false,
+    type: 'spotify',
+    duration: track['duration_ms'],
+    artist: track.artists.map((artist: SpotifyArtist) => artist.name).join(', '),
+})
+
 export const formatSpotifyTracks = (response: SpotifyTracksResponse) => {
-    return response.tracks.items.slice(0, 8).map((track: SpotifyTrack) => ({
-        image: track.album.images[track.album.images.length - 1].url,
-        name: track.name,
-        id: `${track.id}`,
-        isPlayed: false,
-        type: 'spotify',
-        duration: track['duration_ms'],
-        artist: track.artists.map((artist: SpotifyArtist) => artist.name).join(', '),
-    }))
+    return response.tracks.items.map(formatSpotifyTrack)
 };
 
 export const formatSoundCloudTracks = (response: SoundCloudTracksResponse) => {

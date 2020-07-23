@@ -28,13 +28,12 @@ export default function App() {
         >
           <NavigationContainer>
             <Stack.Navigator headerMode='none'>
-              {Object.keys(routes).map((route: string) => (
-                <Stack.Screen name={route} key={route}>
-                  {({ navigation }) => generateRouteComponent(navigation, routes[route])}
+              {routes.map((route: { name: string, Component: React.Component }) => (
+                <Stack.Screen name={route.name} key={route.name}>
+                  {({ navigation }) => generateRouteComponent(navigation, route.Component)}
                 </Stack.Screen>
               ))}
             </Stack.Navigator>
-            <Player />
           </NavigationContainer>
         </ApplicationProvider>
       </PersistGate>

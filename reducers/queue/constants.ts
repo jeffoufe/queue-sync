@@ -10,7 +10,7 @@ const generateActions = (reducerName: string, actionName: string) => {
     }
 }
 
-
+export const JOIN_QUEUE = 'QUEUE/JOIN_QUEUE';
 export const PREPEND_TO_QUEUE = 'QUEUE/PREPEND_TO_QUEUE';
 export const PLAY_TRACK = 'QUEUE/PLAY_TRACK';
 export const NEXT_SONG = 'QUEUE/NEXT_SONG';

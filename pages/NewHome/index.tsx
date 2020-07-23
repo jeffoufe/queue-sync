@@ -13,10 +13,16 @@ export default ({ navigation }: NewHomeProps) => {
     const [roomName, setRoomName] = useState('');
     const [userName, setUserName] = useState('');
     const [isQRScannerVisible, setQRScannerVisible] = useState(false);
-    const { loading } = useSelector((state: any) => state.queue)
+    const { loading, _id } = useSelector((state: any) => state.queue);
     const dispatch = useDispatch();
 
+    if (_id) {
+        navigation.navigate('Queue');
+    }
+
     const onCreateRoom = () => setShowCreationModal(true);
+    const onCancelJoin = () => setQRScannerVisible(false);
+    const onLaunchJoin = () => setQRScannerVisible(true);
 
     const onCloseModal = (hasConfirmed: boolean) => {
         if (hasConfirmed) {
@@ -36,32 +42,37 @@ export default ({ navigation }: NewHomeProps) => {
 
     const data = [
         { title: 'Create a new party', icon: 'plus-outline', onPress: onCreateRoom },
-        { title: 'Join an existing party', icon: 'log-in-outline', onPress: () => setQRScannerVisible(true) }
+        { title: 'Join an existing party', icon: 'log-in-outline', onPress: onLaunchJoin }
     ];
 
-    return (
-        <SafeAreaView>
-            {isQRScannerVisible && <QRScanner />}
-
-            <TopNavigation title='QueueSync' navigation={navigation} />
-            <View>
-                <List data={data} />
-            </View>
-            <Modal
-                isOpen={showCreationModal}
-                title='Enter party name'
-                loading={loading}
-                onCloseModal={onCloseModal}
-            >
-                <Input
-                    placeholder='Party name...'
-                    onChange={setRoomName}
-                />
-                <Input
-                    placeholder='Admin name... (optional)'
-                    onChange={setUserName}
-                />
-            </Modal>
-        </SafeAreaView>
-    );
+    return isQRScannerVisible
+        ? (
+            <QRScanner 
+                onClose={onCancelJoin} 
+                navigation={navigation}
+            />
+        )
+        : (
+            <>
+                <TopNavigation title='QueueSync' navigation={navigation} />
+                <View>
+                    <List data={data} />
+                </View>
+                <Modal
+                    isOpen={showCreationModal}
+                    title='Enter party name'
+                    loading={loading}
+                    onCloseModal={onCloseModal}
+                >
+                    <Input
+                        placeholder='Party name...'
+                        onChange={setRoomName}
+                    />
+                    <Input
+                        placeholder='Admin name... (optional)'
+                        onChange={setUserName}
+                    />
+                </Modal>
+            </>
+        )
 }

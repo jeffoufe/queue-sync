@@ -12,7 +12,8 @@ import {
     CREATE_SOUND_OBJECT,
     START_TIMER,
     PAUSE_TIMER,
-    RESET_TIMER
+    RESET_TIMER,
+    JOIN_QUEUE
 } from './constants'
 
 const initialState = {
@@ -21,7 +22,7 @@ const initialState = {
     startTime: null,
     remainingTime: null,
     // _id: null,
-    _id: '5f0340f378f1160dfc5a0027',
+    _id: '5f1828f38a06300e03f52ebb',
     name: null,
     loadingCreateParty: false,
     loadingGetParty: false

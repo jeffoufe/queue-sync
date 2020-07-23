@@ -5,7 +5,8 @@ import {
 interface SetRouteAction {
     type: typeof SET_ROUTE,
     payload: { 
-        route: string
+        route: string,
+        index: number
     }
 }
 

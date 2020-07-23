@@ -10,7 +10,8 @@ export default (state: RouterReducerState = initialState, action: RouterAction) 
         case SET_ROUTE:
             return { 
                 ...state,
-                route: action.payload.route
+                route: action.payload.route,
+                index: action.payload.index
             }
         default:
             return state;

@@ -6,6 +6,7 @@ interface ModalProps {
     isOpen: boolean,
     title: string,
     loading?: boolean,
+    buttonText?: string,
     onCloseModal: (hasConfirmed: boolean) => void,
     children: React.ReactNode
 }
@@ -16,7 +17,7 @@ const LoadingIndicator = () => (
     </View>
   );
 
-export default ({ isOpen, onCloseModal, children, title, loading }: ModalProps) => {
+export default ({ isOpen, onCloseModal, children, title, loading, buttonText }: ModalProps) => {
     const buttonProps = loading
         ? { accessoryLeft: LoadingIndicator }
         : {};
@@ -35,7 +36,7 @@ export default ({ isOpen, onCloseModal, children, title, loading }: ModalProps) 
                         style={styles.confirmButton}
                         {...buttonProps}
                     >
-                        CONFIRM
+                        {buttonText || 'CONFIRM'}
                     </Button>
                 </Layout>
             </Modal>
