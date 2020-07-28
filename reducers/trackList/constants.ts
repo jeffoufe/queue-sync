@@ -9,4 +9,6 @@ const generateActions = (reducerName: string, actionName: string) => {
 }
 
 export const GET_SPOTIFY_PLAYLIST_ACTIONS = generateActions('TRACKLIST', 'GET_SPOTIFY_PLAYLIST');
+export const GET_SOUNDCLOUD_PLAYLIST_ACTIONS = generateActions('TRACKLIST', 'GET_SOUNDCLOUD_PLAYLIST');
+
 export const GO_TO_PLAYLIST = 'TRACKLIST/GO_TO_PLAYLIST';

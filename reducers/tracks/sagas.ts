@@ -4,16 +4,35 @@ import {
     FETCH_TRACKS_ERROR,
     FETCH_TRACKS_LOADING,
     FETCH_TRACKS_SUCCESS,
+    FETCH_PLAYLISTS_LOADING,
+    FETCH_PLAYLISTS_SUCCESS,
+    FETCH_PLAYLISTS_ERROR,
     PROVIDERS,
     TRANSFORMS,
-    SEARCH_URLS
+    SEARCH_URLS,
+    FETCH_PLAYLISTS
 } from './constants';
-import { getFetchParameters } from './utils';
+import { getFetchParameters, formatSoundCloudPlaylists } from './utils';
 
 interface FetchTracksAction {
     payload: {
         search: string,
         index: number
+    }
+}
+
+function* fetchPlaylists(action: FetchTracksAction) {
+    const { search } = action.payload;
+    yield put({ type: FETCH_PLAYLISTS_LOADING, payload: { search } });
+    const response = yield fetch(
+        `https://api-v2.soundcloud.com/search/playlists_without_albums?q=${search}&client_id=LwwkfCVkKXcE8djbcXfrQLnZZBqZk3f3`
+    );
+    if (response.status >= 400) {
+        yield put({ type: FETCH_PLAYLISTS_ERROR, payload: { error: "Bad response from server" }})
+    } else {
+        const responseJSON = yield response.json();
+        const playlists = formatSoundCloudPlaylists(responseJSON);
+        yield put({ type: FETCH_PLAYLISTS_SUCCESS, payload: { playlists } }) 
     }
 }
 
@@ -29,7 +48,6 @@ function* fetchTracks(action: FetchTracksAction) {
             getFetchParameters(provider, providerObject.accessToken)
         );
         if (response.status >= 400) {
-            alert('pute');
             yield put({ type: FETCH_TRACKS_ERROR, payload: { error: "Bad response from server", provider }})
         } else {
             const responseJSON = yield response.json();
@@ -39,6 +57,9 @@ function* fetchTracks(action: FetchTracksAction) {
     }
 }
 
+export function* watchFetchPlaylists() {
+    yield takeEvery(FETCH_PLAYLISTS, fetchPlaylists)
+}
 
 export function* watchFetchTracks() {
     yield takeEvery(FETCH_TRACKS, fetchTracks)

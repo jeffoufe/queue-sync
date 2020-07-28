@@ -1,26 +1,28 @@
 import React, { useEffect } from 'react';
 import { TopNavigation, TrackList, Content } from '../../components';
-import { GET_SPOTIFY_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants'
+import { GET_SPOTIFY_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants'
 import { useSelector, useDispatch } from 'react-redux';
-import {  ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
+import { ADD_TO_QUEUE_ACTIONS } from '../../reducers/queue/constants';
+import { SPOTIFY } from '../../reducers/library/constants';
 
 interface TrackListProps {
     navigation: any
 };
 
 export default ({ navigation }: TrackListProps) => {
-    const { id, name, loading, tracks } = useSelector((state: any) => state.trackList)
+    const { currentProvider } = useSelector((state: any) => state.library);
+    const { id, name, tracks } = useSelector((state: any) => state.trackList)
     const { _id } = useSelector((state: any) => state.queue);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch({
-            type: GET_SPOTIFY_PLAYLIST_ACTIONS.saga,
+            type: currentProvider === SPOTIFY ? GET_SPOTIFY_PLAYLIST_ACTIONS.saga : GET_SOUNDCLOUD_PLAYLIST_ACTIONS.saga,
             urlParams: {
                 playlistId: id
             }
         });
-    }, []);
+    }, [id]);
 
     const onAddTrackToQueue = (track: any) => {
         dispatch({

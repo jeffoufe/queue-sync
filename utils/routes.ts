@@ -1,8 +1,12 @@
-import { NewHome, Queue, Settings, Search, Library, SpotifyPlaylists, TrackList } from '../pages';
+import { NewHome, Queue, Settings, Search, Library, Playlist, TrackList } from '../pages';
 
-export type RouteName = 'NewHome' | 'Search' | 'Queue' | 'Settings'
+export type RouteName = 'Home' | 'Search' | 'Queue' | 'Settings' | 'Playlist' | 'Library'
 
 export default [
+    {
+        Component: Playlist,
+        name: 'Playlist'
+    },
     {
         Component: Queue,
         name: 'Queue'
@@ -26,9 +30,5 @@ export default [
     {
         Component: TrackList,
         name: 'TrackList'
-    },
-    {
-        Component: SpotifyPlaylists,
-        name: 'SpotifyPlaylists'
     }
 ];

@@ -5,10 +5,16 @@ import {
 } from './utils';
 
 export const CHANGE_PROVIDER = 'TRACKS/CHANGE_PROVIDER';
+
 export const FETCH_TRACKS = 'TRACKS/FETCH_TRACKS';
 export const FETCH_TRACKS_LOADING = 'TRACKS/FETCH_TRACKS_LOADING';
 export const FETCH_TRACKS_SUCCESS = 'TRACKS/FETCH_TRACKS_SUCCESS';
 export const FETCH_TRACKS_ERROR = 'TRACKS/FETCH_TRACKS_ERROR';
+
+export const FETCH_PLAYLISTS = 'TRACKS/FETCH_PLAYLISTS';
+export const FETCH_PLAYLISTS_LOADING = 'TRACKS/FETCH_PLAYLISTS_LOADING';
+export const FETCH_PLAYLISTS_SUCCESS = 'TRACKS/FETCH_PLAYLISTS_SUCCESS';
+export const FETCH_PLAYLISTS_ERROR = 'TRACKS/FETCH_PLAYLISTS_ERROR';
 
 export const TRANSFORMS = [
     formatSpotifyTracks,
@@ -24,6 +30,6 @@ export const PROVIDERS = [
 
 export const SEARCH_URLS = [
     (search: string) => `https://api.spotify.com/v1/search?q=${search}&type=track`,
-    (search: string) => `https://api-v2.soundcloud.com/search/tracks?q=${search}&client_id=daZlxLpZTSroZXmrbXa6hiLt8ub6Qm7X`,
+    (search: string) => `https://api-v2.soundcloud.com/search/tracks?q=${search}&client_id=iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX`,
     (search: string) => `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=25&q=${search}&videoEmbeddable=true&key=AIzaSyBYz0xOFTbAL-4jybPOXYVe5PZT7wTRDrw`
 ];

@@ -1,7 +1,7 @@
 import { call, takeEvery, select, put } from 'redux-saga/effects'
 import { Track } from '../../components/TrackList';
 import { store } from '../../store';
-import { generateSaga } from '../../utils/';
+import { generateSaga, domain } from '../../utils/';
 import { 
     PLAY_TRACK, 
     NEXT_SONG, 
@@ -18,9 +18,6 @@ import {
     PAUSE_TIMER,
     RESET_TIMER
 } from './constants';
-
-const domain = 'http://node-express-env-3.eba-ppfp3jba.us-east-2.elasticbeanstalk.com/'
-// const domain = 'http://localhost:3000';
 
 function* playSpotifyTrack(track: Track) {
     const { timerId, remainingTime } = yield select((state: any) => state.queue);

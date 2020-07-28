@@ -1,9 +1,11 @@
-import { 
-    FETCH_TRACKS,
+import {
     FETCH_TRACKS_SUCCESS, 
     FETCH_TRACKS_ERROR, 
     FETCH_TRACKS_LOADING,
-    CHANGE_PROVIDER
+    CHANGE_PROVIDER,
+    FETCH_PLAYLISTS_SUCCESS,
+    FETCH_PLAYLISTS_LOADING,
+    FETCH_PLAYLISTS_ERROR
 } from './constants';
 
 interface ChangeProviderAction {
@@ -37,11 +39,35 @@ interface FetchTracksErrorAction {
     }
 }
 
+interface FetchPlaylistsLoadingAction {
+    type: typeof FETCH_PLAYLISTS_LOADING,
+    payload: {
+        search: string
+    }
+}
+
+interface FetchPlaylistsSuccessAction {
+    type: typeof FETCH_PLAYLISTS_SUCCESS,
+    payload: {
+        playlists: Array<any>
+    }
+}
+
+interface FetchPlaylistsErrorAction {
+    type: typeof FETCH_PLAYLISTS_ERROR,
+    payload: {
+        error: string
+    }
+}
+
 export type TracksAction = 
     FetchTracksLoadingAction
     | FetchTracksSuccessAction 
     | FetchTracksErrorAction
     | ChangeProviderAction
+    | FetchPlaylistsLoadingAction
+    | FetchPlaylistsSuccessAction
+    | FetchPlaylistsErrorAction
 
 export interface ProviderObject {
     loading: boolean,
@@ -102,4 +128,15 @@ export interface SoundCloudTrack {
 
 export interface SoundCloudTracksResponse {
     collection: Array<SoundCloudTrack>
+}
+
+export interface SoundCloudPlaylist {
+    tracks: Array<SoundCloudTrack>,
+    track_count: number,
+    title: string,
+    id: string
+}
+
+export interface SoundCloudPlaylistsResponse {
+    collection: Array<SoundCloudPlaylist> 
 }

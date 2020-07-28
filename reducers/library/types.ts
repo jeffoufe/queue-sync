@@ -1,29 +1,35 @@
-import { GET_SPOTIFY_PLAYLISTS_ACTIONS } from './constants';
+import { 
+    GET_SPOTIFY_PLAYLISTS_ACTIONS,
+    GET_SOUNDCLOUD_PLAYLISTS_ACTIONS
+} from './constants';
 
-export interface SpotifyPlaylist {
+export interface Playlist {
     id: string,
     name: string,
+    ids: Array<string>,
     images: Array<{
         url: string
     }>
 }
 
 export interface LibraryReducerState {
-    spotifyPlaylists: Array<SpotifyPlaylist>
+    playlists: Array<Playlist>,
+    currentProvider: number,
+    loadingSavePlaylist: boolean,
+    loadingGetPlaylists: boolean,
 }
 
-interface GetSpotifyPlaylistsLoading {
-    type: typeof GET_SPOTIFY_PLAYLISTS_ACTIONS.loading,
-    payload: {}
+interface GetPlaylistsLoading {
+    type: typeof GET_SPOTIFY_PLAYLISTS_ACTIONS.loading | typeof GET_SOUNDCLOUD_PLAYLISTS_ACTIONS.loading,
 }
 
-interface GetSpotifyPlaylistsSuccess {
-    type: typeof GET_SPOTIFY_PLAYLISTS_ACTIONS.success,
+interface GetPlaylistsSuccess {
+    type: typeof GET_SPOTIFY_PLAYLISTS_ACTIONS.success | typeof GET_SOUNDCLOUD_PLAYLISTS_ACTIONS.success,
     payload: {
-        items: Array<SpotifyPlaylist>
+        items: Array<Playlist>
     }
 }
 
 export type LibraryAction = 
-    GetSpotifyPlaylistsLoading
-    | GetSpotifyPlaylistsSuccess
+    GetPlaylistsLoading
+    | GetPlaylistsSuccess

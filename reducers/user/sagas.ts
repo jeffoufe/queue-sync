@@ -124,7 +124,7 @@ export function* watchGetAvailableDevices() {
     yield takeEvery(GET_DEVICES_SPOTIFY, getAvailableDevices)
 }
 
-function* authorizeDeezer() {
+/* function* authorizeDeezer() {
     const result = yield AuthSession.startAsync({
         authUrl:
             'https://connect.deezer.com/oauth/auth.php' +
@@ -150,4 +150,4 @@ function* authorizeDeezer() {
 
 export function* watchAuthorizeDeezer() {
     yield takeEvery(AUTHORIZE_DEEZER, authorizeDeezer)
-}
+} */
