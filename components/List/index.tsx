@@ -12,17 +12,20 @@ interface ListItemProps {
     accessory?: {
         icon: string,
         onPress: () => void,
-    }
+    },
+    noBorder?: boolean
 };
 
 interface ListProps {
     data: Array<ListItemProps>
 };
 
-const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }}: { item: ListItemProps }) => {
-    const renderIcon = (style: any) => {
+export const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }, noBorder }: { item: ListItemProps, noBorder: boolean }) => {
+    const renderIcon = icon && typeof icon !== 'string' ? icon : (style: any) => {
         if (icon) {
-            return <Icon {...style} name={icon} height={25} />;
+            if (typeof icon === 'string') {
+                return <Icon {...style} name={icon} height={25} />;
+            }
         }
         if (avatar) {
             return <Avatar style={styles.avatar} source={{ uri: avatar }} />
@@ -50,12 +53,19 @@ const renderItem = ({ item: { icon, avatar, title, description, progress, onPres
         return <View />;
     }
 
+    const listItemStyle = StyleSheet.create({
+        listItem: {
+            borderBottomWidth: noBorder ? 0 : 1,
+            borderBottomColor: '#eee',
+        },
+    })
+
     return (
         <ListItem
             title={title}
             description={description}
             accessoryLeft={renderIcon}
-            style={styles.listItem}
+            style={listItemStyle.listItem}
             onPress={onPress}
             accessoryRight={renderItemAccessory}
         />
@@ -65,14 +75,14 @@ const renderItem = ({ item: { icon, avatar, title, description, progress, onPres
 export default ({ data }: ListProps) => (
     <List 
         data={data}
-        renderItem={renderItem}
+        renderItem={({ item }) => renderItem({ item, noBorder: false })}
+        style={styles.list}
     />
 )
 
 const styles = StyleSheet.create({
-    listItem: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+    list: {
+        backgroundColor: '#F2F2F2'
     },
     iconText: {
         textAlign: 'center',

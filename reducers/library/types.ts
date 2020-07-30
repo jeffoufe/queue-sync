@@ -1,12 +1,14 @@
 import { 
     GET_SPOTIFY_PLAYLISTS_ACTIONS,
-    GET_SOUNDCLOUD_PLAYLISTS_ACTIONS
+    GET_SOUNDCLOUD_PLAYLISTS_ACTIONS,
+    SELECT_TRACK
 } from './constants';
 
 export interface Playlist {
     id: string,
     name: string,
     ids: Array<string>,
+    selectedTrack: any,
     images: Array<{
         url: string
     }>
@@ -30,6 +32,14 @@ interface GetPlaylistsSuccess {
     }
 }
 
+interface AddToPlaylistAction {
+    type: typeof SELECT_TRACK
+    payload: {
+        track: any
+    }
+}
+
 export type LibraryAction = 
     GetPlaylistsLoading
     | GetPlaylistsSuccess
+    | AddToPlaylistAction

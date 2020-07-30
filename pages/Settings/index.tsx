@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { TopNavigation, SpotifyLogin, DeezerLogin, Content } from '../../components';
 
 interface SettingsProps {
@@ -20,7 +20,7 @@ export default ({ navigation }: SettingsProps) => {
             <Content>
                 <View style={styles.container}>
                     <SpotifyLogin />
-                    <DeezerLogin />
+                    {false && <DeezerLogin />}
                 </View>
             </Content>
         </>

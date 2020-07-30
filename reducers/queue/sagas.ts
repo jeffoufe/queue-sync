@@ -1,6 +1,7 @@
 import { call, takeEvery, select, put } from 'redux-saga/effects'
 import { Track } from '../../components/TrackList';
 import { store } from '../../store';
+import axios from 'axios';
 import { generateSaga, domain } from '../../utils/';
 import { 
     PLAY_TRACK, 
@@ -16,8 +17,10 @@ import {
     CREATE_SOUND_OBJECT,
     START_TIMER,
     PAUSE_TIMER,
-    RESET_TIMER
+    RESET_TIMER,
+    ADD_PLAYLIST_TO_QUEUE
 } from './constants';
+import { formatSpotifyTrack, formatSoundCloudTracks } from '../tracks/utils';
 
 function* playSpotifyTrack(track: Track) {
     const { timerId, remainingTime } = yield select((state: any) => state.queue);
@@ -195,7 +198,7 @@ function* popTrack() {
     const { _id, tracks } = yield select((state: any) => state.queue);
     const currentTrack = tracks[0];
     yield fetch(
-        `${domain}/parties/${_id}/track/${currentTrack.id}`, 
+        `${domain}/parties/${_id}/tracks/${currentTrack.id}`, 
         { method: 'DELETE' }
     )
 }
@@ -238,12 +241,53 @@ export const watchGetParty = generateSaga({
 
 export const watchAddToQueue = generateSaga({
     ...ADD_TO_QUEUE_ACTIONS,
-    url: ({ id }: { id: string }) => `${domain}/parties/${id}/track`,
+    url: ({ id }: { id: string }) => `${domain}/parties/${id}/tracks`,
     method: 'POST',
 })
 
 export const watchDeleteFromQueue = generateSaga({
     ...DELETE_FROM_QUEUE_ACTIONS,
-    url: ({ id, trackId }: { id: string, trackId: string }) => `${domain}/parties/${id}/track/${trackId}`,
+    url: ({ id, trackId }: { id: string, trackId: string }) => `${domain}/parties/${id}/tracks/${trackId}`,
     method: 'DELETE'
 })
+
+function* getTracksFromPlaylist(action: any) {
+    const { playlistId, type } = action.payload;
+    const { _id } = yield select((state: any) => state.queue);
+    switch (type) {
+        case 'spotify':
+            const { accessToken } = yield select((state: any) => state.user.spotify);
+            const response = yield axios({
+                url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+                method: 'GET',
+                headers: { Authorization: `Bearer ${accessToken}` }
+            })
+            return response.data.items.map((item: any) => formatSpotifyTrack(item.track));
+        case 'soundcloud':
+            const idsResponse = yield axios({
+                url: `${domain}/parties/${_id}/sc-playlists/${playlistId}/tracks`,
+                method: 'GET',
+            });
+            const tracksResponse = yield fetch(
+                `https://api-v2.soundcloud.com/tracks?ids=${idsResponse.data.slice(0, 50)}&client_id=LwwkfCVkKXcE8djbcXfrQLnZZBqZk3f3&%5Bobject%20Object%5D=&app_version=1595844156&app_locale=en`
+            );
+            const responseJSON = yield tracksResponse.json();
+            return formatSoundCloudTracks({ collection: responseJSON });       
+        default:
+            return [];
+    }
+}
+
+function* addPlaylistToQueue(action: any) {
+    const tracks = yield call(getTracksFromPlaylist, action); 
+    const { _id } = yield select((state: any) => state.queue);
+    yield axios({
+        url: `${domain}/parties/${_id}/tracks`,
+        method: 'POST',
+        data: { tracks }
+    })
+}
+
+export function* watchAddPlaylistToQueue() {
+    yield takeEvery(ADD_PLAYLIST_TO_QUEUE, addPlaylistToQueue)
+}

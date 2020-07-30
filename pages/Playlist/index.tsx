@@ -1,7 +1,18 @@
-import React, { useEffect } from 'react';
-import { TopNavigation, List, Content } from '../../components';
+import React, { useEffect, useState } from 'react';
+import { TopNavigation, TrackList, Content, Modal, Input } from '../../components';
 import { Playlist } from '../../reducers/library/types';
-import { GET_SPOTIFY_PLAYLISTS_ACTIONS, GET_SOUNDCLOUD_PLAYLISTS_ACTIONS } from '../../reducers/library/constants';
+import { 
+    GET_SPOTIFY_PLAYLISTS_ACTIONS, 
+    GET_SOUNDCLOUD_PLAYLISTS_ACTIONS, 
+    GET_MIXED_PLAYLISTS_ACTIONS, 
+    CREATE_MIXED_PLAYLIST_ACTIONS,
+    SPOTIFY, 
+    SOUNDCLOUD, 
+    MIXED, 
+    ADD_TO_PLAYLIST_ACTIONS,
+    RESET_SELECTED_TRACK,
+    ADD_PLAYLIST_TO_PLAYLIST_ACTIONS
+} from '../../reducers/library/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { GO_TO_PLAYLIST } from '../../reducers/trackList/constants';
 import { CHANGE_PROVIDER } from '../../reducers/tracks/constants';
@@ -13,9 +24,33 @@ interface SpotifyPlaylistsProps {
 export default ({ navigation }: SpotifyPlaylistsProps) => {
     const dispatch = useDispatch();
     const { _id } = useSelector((state: any) => state.queue);
-    const { playlists, currentProvider, loadingGetPlaylists } = useSelector((state: any) => state.library);
+    const { playlists, currentProvider, loadingGetPlaylists, selectedTrack, playlistToBeAdded } = useSelector((state: any) => state.library);
+    const [showCreationModal, setShowCreationModal] = useState<boolean>(false);
+    const [playlistName, setPlaylistName] = useState<string>('');
+
+    const onCloseModal = () => {
+        dispatch({
+            type: CREATE_MIXED_PLAYLIST_ACTIONS.saga,
+            urlParams: { id: _id },
+            successCallback: () => {
+                setShowCreationModal(false);
+                dispatch({ 
+                    type: GET_MIXED_PLAYLISTS_ACTIONS.saga,
+                    urlParams: { id: _id }
+                })
+            },
+            payload: {
+                playlist: {
+                    userId: _id,
+                    name: playlistName,
+                    images: [{}]
+                }
+            }
+        })
+    }
 
     const goBack = () => navigation.navigate('Library');
+
     const goToTrackList = (id: string, name: string, ids: Array<string>) => {
         dispatch({
             type: GO_TO_PLAYLIST,
@@ -24,19 +59,60 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
         navigation.navigate('TrackList');
     }
 
+    const addToPlaylist = (playlistId: string) => {
+        dispatch({
+            type: ADD_TO_PLAYLIST_ACTIONS.saga,
+            urlParams: { playlistId, id: _id },
+            payload: { track: selectedTrack },
+            successCallback: () => {
+                dispatch({ type: RESET_SELECTED_TRACK });
+                navigation.goBack();
+                navigation.goBack();
+            }
+        })
+    }
+
+    const addPlaylistToPlaylist = (playlistId: string, playlistName: string, playlistImages: string) => {
+        dispatch({
+            type: ADD_PLAYLIST_TO_PLAYLIST_ACTIONS.saga,
+            urlParams: { playlistId: playlistToBeAdded, id: _id },
+            payload: { 
+                playlist: { 
+                    id: playlistId, 
+                    type: currentProvider,
+                    name: playlistName,
+                    images: playlistImages
+                }
+            },
+            successCallback: () => {
+                dispatch({ 
+                    type: GET_MIXED_PLAYLISTS_ACTIONS.saga,
+                    urlParams: { id: _id }
+                });
+                navigation.goBack();
+            }
+        })
+    }
+
     const providerData = (() => {
         switch(currentProvider) {
-            case 1:
+            case MIXED:
                 return {
-                    actions: GET_SOUNDCLOUD_PLAYLISTS_ACTIONS,
+                    actions: GET_MIXED_PLAYLISTS_ACTIONS,
                     urlParams: { id: _id },
-                    title: 'Your SoundCloud Playlists'
+                    title: 'Your Mixed Playlists'
                 }
-            case 0:
-            default:
+            case SPOTIFY:
                 return {
                     actions: GET_SPOTIFY_PLAYLISTS_ACTIONS,
-                    title: 'Your Spotify Playlists'
+                    title: 'Your Spotify Playlists',
+                }
+            case SOUNDCLOUD:
+            default:
+                return {
+                    actions: GET_SOUNDCLOUD_PLAYLISTS_ACTIONS,
+                    title: 'Your SoundCloud Playlists',
+                    urlParams: { id: _id },
                 }
         }
     })();
@@ -50,41 +126,82 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
 
     const data = playlists.map((playlist: Playlist) => { 
         const onPress = () => {
-            goToTrackList(playlist.id, playlist.name, playlist.ids)
+            const playlistId = playlist.id || playlist['_id'];
+            if (selectedTrack) {
+                addToPlaylist(playlistId);
+            } 
+            else if (playlistToBeAdded) { 
+                addPlaylistToPlaylist(playlistId, playlist.name, playlist.images);
+            }  
+            else {
+                goToTrackList(playlistId, playlist.name, playlist.ids)
+            }
         };
         return {
-            title: playlist.name,
-            avatar: playlist.images[0].url,
-            onPress,
-            accessory: {
-                icon: 'arrow-ios-forward-outline',
-            }
+            name: playlist.name,
+            image: playlist.images[0].url,
+            type: playlist.type,
+            id: playlist.id || playlist['_id'],
+            onPress
         }
     })
+
+    const onPressPlus = () => {
+        switch (currentProvider) {
+            case SOUNDCLOUD:
+                dispatch({
+                    type: CHANGE_PROVIDER,
+                    payload: { currentProviderIndex: -1 }
+                });
+                navigation.navigate('Search');
+                break;
+            case MIXED:
+                setShowCreationModal(true);
+                break;
+            default:
+                break;
+        }
+    }
 
     return (
         <>
             <TopNavigation 
                 navigation={navigation} 
-                title={providerData.title}
+                title={!!selectedTrack ? 'Add to a playlist' : providerData.title}
                 leftControl={{
                     icon: 'arrow-back-outline',
                     onPress: goBack
                 }}
-                rightControls={[{
-                    icon: 'plus',
-                    onPress: () => {
-                        dispatch({
-                            type: CHANGE_PROVIDER,
-                            payload: { currentProviderIndex: -1 }
-                        });
-                        navigation.navigate('Search');
-                    }
-                }]}
+                rightControls={currentProvider === SPOTIFY || !!selectedTrack || playlistToBeAdded
+                    ? [] 
+                    : [{
+                        icon: 'plus',
+                        onPress: onPressPlus
+                    }]
+                }
             />
+
+            {currentProvider === MIXED && <Modal
+                isOpen={showCreationModal}
+                title='Enter new playlist name'
+                loading={false}
+                onCloseModal={onCloseModal}
+            >
+                <Input
+                    placeholder='Playlist name...'
+                    onChange={setPlaylistName}
+                />
+            </Modal>}
             
             <Content loading={loadingGetPlaylists}>
-                <List data={data} />
+                <TrackList 
+                    navigation={navigation}
+                    tracks={data}
+                    actions={(!!selectedTrack || !!playlistToBeAdded)
+                        ? []
+                        : ['addPlaylistToQueue']
+                    }
+                />
             </Content>
         </>
     )

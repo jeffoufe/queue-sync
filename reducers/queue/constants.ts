@@ -21,6 +21,7 @@ export const CREATE_SOUND_OBJECT = 'QUEUE/CREATE_SOUND_OBJECT';
 export const START_TIMER = 'QUEUE/START_TIMER';
 export const PAUSE_TIMER = 'QUEUE/PAUSE_TIMER';
 export const RESET_TIMER = 'QUEUE/RESET_TIMER';
+export const ADD_PLAYLIST_TO_QUEUE = 'QUEUE/ADD_PLAYLIST_TO_QUEUE';
 
 export const CREATE_PARTY_ACTIONS = generateActions('QUEUE', 'CREATE_PARTY');
 export const GET_PARTY_ACTIONS = generateActions('QUEUE', 'GET_PARTY');

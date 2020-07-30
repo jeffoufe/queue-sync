@@ -1,6 +1,6 @@
 import { GET_SPOTIFY_PLAYLIST_ACTIONS, GO_TO_PLAYLIST } from './constants';
 import { SpotifyTrack } from '../tracks/types';
-import { SpotifyPlaylist } from '../library/types';
+import { SpotifyPlaylist } from '../tracks/types';
 
 interface GoToPlaylistAction {
     type: typeof GO_TO_PLAYLIST,
@@ -30,5 +30,6 @@ export interface TrackListReducerState {
     tracks: Array<SpotifyPlaylist>,
     loading: boolean,
     name: string,
-    id: string | null
+    id: string | null,
+    playlists: Array<any>
 }

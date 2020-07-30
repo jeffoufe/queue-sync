@@ -63,6 +63,8 @@ export default ({ navigation }: BottomMenuProps) => {
 
 const styles = StyleSheet.create({
     navigation: {
+        borderTopWidth: 1,
+        borderTopColor: '#EEEEEE',
         position: 'absolute',
         width: '100%',
         bottom: 0

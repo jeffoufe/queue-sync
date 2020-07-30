@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';  
+import { View, StyleSheet, ActivityIndicator, Dimensions, StatusBar } from 'react-native';  
 import { useSelector } from 'react-redux';
 
 interface ContentProps {
@@ -9,13 +9,26 @@ interface ContentProps {
 
 export default ({ children, loading }: ContentProps) => {
     const { tracks } = useSelector((state: any) => state.queue);
+    const { selectedTrack } = useSelector((state: any) => state.library);
+
+    const bottom = (() => {
+        if (!!selectedTrack) {
+            return 0;
+        }
+        if (tracks.length) {
+            return 113;
+        }
+        return 55
+    })()
 
     const styles = StyleSheet.create({
         container: {
             position: 'absolute',
             width: '100%',
-            top: 56,
-            bottom: tracks.length ? 113 : 56,
+            top: 56 + (StatusBar.currentHeight || 0),
+            paddingTop: 15,
+            paddingHorizontal: 15,
+            bottom,
             overflow: 'scroll'
         },
         loading: {

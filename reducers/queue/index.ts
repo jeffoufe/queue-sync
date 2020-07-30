@@ -25,8 +25,10 @@ const initialState = {
     _id: '5f1828f38a06300e03f52ebb',
     name: null,
     loadingCreateParty: false,
-    loadingGetParty: false
+    loadingGetParty: true
 };
+
+Audio.setAudioModeAsync({ staysActiveInBackground: true })
 
 export default (state: QueueReducerState = initialState, action: QueueAction) => {
     const [track, ...rest] = state.tracks

@@ -7,7 +7,7 @@ interface DropdownModal {
     isOpen: boolean,
     title: string,
     selectedIndex: number,
-    onCloseModal: () => void,
+    onCloseModal: (isValid: boolean) => void,
     onChange: (index: number) => void
 }
 

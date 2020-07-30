@@ -1,5 +1,5 @@
-import { generateSaga } from '../../utils/';
-import { GET_SPOTIFY_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLIST_ACTIONS } from './constants';
+import { generateSaga, domain } from '../../utils';
+import { GET_SPOTIFY_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLIST_ACTIONS, GET_MIXED_PLAYLIST_ACTIONS } from './constants';
 import { takeEvery, select, put } from 'redux-saga/effects';
 import { formatSoundCloudTracks } from '../tracks/utils';
 
@@ -8,6 +8,12 @@ export const watchGetSpotifyPlaylist = generateSaga({
     url: ({ playlistId }: { playlistId: string }) => `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
     method: 'GET',
     isSpotify: true,
+})
+
+export const watchGetMixedPlaylist = generateSaga({
+    ...GET_MIXED_PLAYLIST_ACTIONS,
+    url: ({ id, playlistId }: { id: string, playlistId: string }) => `${domain}/parties/${id}/playlists/${playlistId}/track`,
+    method: 'GET'
 })
 
 function* getSoundCloudPlaylist() {

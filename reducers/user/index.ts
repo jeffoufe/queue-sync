@@ -34,9 +34,10 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
                 ...state,
                 spotify: {
                     ...state.spotify,
-                    accessToken: "BQAaJN0nfWr2dpeJZsaqqzqQid_chPV8nv1nVcSxcJbCIISqFTK0Bz1W2WtK9Du5YDo05le2Ne8AMg65CsxHCrgfu9SC7R1t23KbY9M1hsfFmBAPZVveUrYHzhK1zDfdjlyGr45ncjnFjq1wo8gcSLY1wmUCvl04sIMEiXYpU_lbHnzXxe66k4r6aWjkElZbPGEyEDvhmH-IZR6IXlFH8ABVrdPMORMSSL025tLwpkVVF2ZJypFPxldx0echOsU1LX6Ft3ykLxEcZVc",
-                    refreshToken: "AQBEvfCLv4zfXyn4--C8v9e3H3ryDtjhlwKjjQTRVJvUG20ccy6VbB3vphNQ2xgfOF6QNxIYQAfCKCmRggVCENo0WnkkxYB8i2gKvGgpUYC_4-BKkIiNuYr8TJSO6Sh7p6E",
-                    expirationTime: 1595511795591
+                    accessToken: "BQB7dJjuNH-M1SxiKPM53BJSoezt-gPCNqncvQAT_ZUcWJPepd-WSveg-l25-Jcau3ujA1WK-LHOFKWbYaU63VoTg3vF-QcLFA_WzPLhcIpgnIREJBKEB_ga922WYQeYiJ7deVcTbHLBHj7F53AjcnCKA-UdojzGDHVsCD3LiPFay-8uy4wfLL1KYNAEIBpapMljTf5y4AcxqHHUCdXc38UsBT-Mn4R9hyxd_9H41f_DjPwpRJ_C_TR559D_dSxNL-vsUdYoleWEToo",
+                    refreshToken: "AQBhQVbgXrqPiLFFLqFaxqU2iGDsSW27hpoEKyxpXkMhmAAm59TYAIMDVu9ijIWQ3OUsNF4U9tltfYlDHMlsfUt8BZczDX3nnkpuuEp45HbqSfj3meLNQtQlFtaYn-b6V4c",
+                    expirationTime: 1596041543984,
+                    deviceID: "06fce6b33fb7673d0570feb59ff87429ecdb58a3"
                 }
             } */
         case AUTHORIZE_SPOTIFY_LOADING:

@@ -4,12 +4,16 @@ export type RouteName = 'Home' | 'Search' | 'Queue' | 'Settings' | 'Playlist' | 
 
 export default [
     {
-        Component: Playlist,
-        name: 'Playlist'
-    },
-    {
         Component: Queue,
         name: 'Queue'
+    },
+    {
+        Component: Library,
+        name: 'Library'
+    },
+    {
+        Component: Playlist,
+        name: 'Playlist'
     },
     {
         Component: Search,
@@ -22,10 +26,6 @@ export default [
     {
         Component: NewHome,
         name: 'Home'
-    },
-    {
-        Component: Library,
-        name: 'Library'
     },
     {
         Component: TrackList,

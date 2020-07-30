@@ -63,7 +63,7 @@ export default () => {
 const styles = StyleSheet.create({
     listItem: {
         position: 'absolute',
-        bottom: 56,
+        bottom: 55,
         width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: '#F2F2F2',

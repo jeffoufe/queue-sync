@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Alert, StyleSheet, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { TopNavigation, Modal, TrackList, Content } from '../../components';
-import { GET_PARTY_ACTIONS, DELETE_FROM_QUEUE_ACTIONS } from '../../reducers/queue/constants';
+import { TopNavigation, Modal, TrackList, Content, Header } from '../../components';
+import { GET_PARTY_ACTIONS } from '../../reducers/queue/constants';
 import QRCode from 'react-native-qrcode-svg';
 import { Icon } from '@ui-kitten/components';
 import { REFRESH_SPOTIFY } from '../../reducers/user/constants';
@@ -12,7 +12,7 @@ interface QueueProps {
 };
 
 export default ({ navigation }: QueueProps) => {
-    const { name, tracks, _id } = useSelector((state: any) => state.queue);
+    const { name, tracks, _id, loadingGetParty } = useSelector((state: any) => state.queue);
     const [isShareModalOpen, setShareModalOpen] = useState(false);
     const dispatch = useDispatch();
 
@@ -54,16 +54,6 @@ export default ({ navigation }: QueueProps) => {
         // setInterval(getParty, 1000);
     }, []);
 
-    const onDeleteTrackFromQueue = (track: any) => {
-        dispatch({
-            type: DELETE_FROM_QUEUE_ACTIONS.saga,
-            urlParams: {
-                id: _id,
-                trackId: track.id
-            }
-        })
-    }
-
     const rightControls = [
         {
             icon: 'share-outline',
@@ -77,7 +67,7 @@ export default ({ navigation }: QueueProps) => {
                 <Icon name='info-outline' height={75} width={75} fill='#8F9BB3' />
             </View>
             <Text style={styles.noTrackText}>
-                No track in the queue
+                No Track In Queue
             </Text>
         </View>
     );
@@ -103,16 +93,27 @@ export default ({ navigation }: QueueProps) => {
                 }}
             />
             
-            <Content>
+            <Content loading={loadingGetParty}>
                 {!!tracks.length 
                     ? (
-                        <TrackList 
-                            tracks={tracks}
-                            accessory={{
-                                icon: 'close-outline',
-                                onPress: onDeleteTrackFromQueue
-                            }} 
-                        />
+                        <View>
+                            <Header noMarginTop>Currently Playing</Header>
+                            <TrackList 
+                                navigation={navigation}
+                                tracks={[tracks[0]]}
+                                actions={['deleteFromQueue', 'addToPlaylist']}
+                            />
+                            {tracks.length > 1 && (
+                                <>
+                                    <Header>Next In Queue</Header>
+                                    <TrackList 
+                                        navigation={navigation}
+                                        tracks={tracks.slice(1)}
+                                        actions={['deleteFromQueue', 'addToPlaylist']}
+                                    />
+                                </>
+                            )}
+                        </View>
                     )
                     : <NoTrack />
                 }
