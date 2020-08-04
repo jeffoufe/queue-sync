@@ -12,6 +12,7 @@ interface Saga extends Actions {
     url: (params?: Object) => string,
     method: "PUT" | "GET" | "DELETE" | "POST" | "PATCH",
     params?: Object,
+    loadingPayload?: Object,
     isSpotify?: boolean,
     streaming?: boolean,
     responsePath: string,
@@ -26,12 +27,12 @@ interface Action {
 
 export default (saga: Saga) => {
     const sagaFn = function* (action: Action) {
-        yield put({ type: saga.loading })
+        yield put({ type: saga.loading, payload: saga.loadingPayload || {} })
         
         const accessToken = yield select((state: any) => state.user.spotify.accessToken);
         const { onDownloadProgress } = saga;
         
-        const headers = !saga.isSpotify && accessToken
+        const headers = !saga.isSpotify || !accessToken
             ? {} 
             : { Authorization: `Bearer ${accessToken}` } 
 

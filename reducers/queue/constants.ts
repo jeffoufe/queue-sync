@@ -1,14 +1,4 @@
-// import { generateActions } from '../../utils';
-
-const generateActions = (reducerName: string, actionName: string) => {
-    const prefix = `${reducerName}/${actionName}`;
-    return {
-        saga: prefix,
-        loading: `${prefix}_LOADING`,
-        success: `${prefix}_SUCCESS`,
-        error: `${prefix}_ERROR`,   
-    }
-}
+import generateActions from '../../utils/generateActions';
 
 export const JOIN_QUEUE = 'QUEUE/JOIN_QUEUE';
 export const PREPEND_TO_QUEUE = 'QUEUE/PREPEND_TO_QUEUE';

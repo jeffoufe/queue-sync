@@ -1,7 +1,5 @@
 import { TrackListAction, TrackListReducerState } from './types';
-import { GET_SPOTIFY_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLIST_ACTIONS, GO_TO_PLAYLIST, GET_MIXED_PLAYLIST_ACTIONS } from './constants'
-import { formatSpotifyTrack } from '../tracks/utils'
-import { SpotifyTrack } from '../tracks/types';
+import { GO_TO_PLAYLIST, GET_PLAYLIST_ACTIONS } from './constants'
 
 const initialState = {
     tracks: [],
@@ -21,31 +19,17 @@ export default (state: TrackListReducerState = initialState, action: TrackListAc
                 id: action.payload.id,
                 ids: action.payload.ids
             }
-        case GET_SPOTIFY_PLAYLIST_ACTIONS.loading:
-        case GET_SOUNDCLOUD_PLAYLIST_ACTIONS.loading:
-        case GET_MIXED_PLAYLIST_ACTIONS.loading:
+        case GET_PLAYLIST_ACTIONS.loading:
             return { 
                 ...state,
                 loading: true
             }
-        case GET_SPOTIFY_PLAYLIST_ACTIONS.success:
+        case GET_PLAYLIST_ACTIONS.success:
             return { 
-                ...state,
-                loading: false,
-                tracks: action.payload.items.map(({ track }: { track: SpotifyTrack }) => formatSpotifyTrack(track))
-            }
-        case GET_SOUNDCLOUD_PLAYLIST_ACTIONS.success:
-            return { 
-                ...state,
-                loading: false,
-                tracks: action.payload.items
-            }
-        case GET_MIXED_PLAYLIST_ACTIONS.success:
-            return {
                 ...state,
                 loading: false,
                 tracks: action.payload.tracks,
-                playlists: action.payload.playlists
+                playlists: action.payload.playlists || []
             }
         default:
             return state;

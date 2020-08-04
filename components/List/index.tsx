@@ -20,7 +20,7 @@ interface ListProps {
     data: Array<ListItemProps>
 };
 
-export const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }, noBorder }: { item: ListItemProps, noBorder: boolean }) => {
+export const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }, noBorder }: { item: ListItemProps, noBorder: boolean }, key?: number) => {
     const renderIcon = icon && typeof icon !== 'string' ? icon : (style: any) => {
         if (icon) {
             if (typeof icon === 'string') {
@@ -62,6 +62,7 @@ export const renderItem = ({ item: { icon, avatar, title, description, progress,
 
     return (
         <ListItem
+            key={key}
             title={title}
             description={description}
             accessoryLeft={renderIcon}

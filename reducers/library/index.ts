@@ -1,4 +1,4 @@
-import { ADD_PLAYLIST_TO_PLAYLIST_ACTIONS, SWITCH_IS_ADDING_PLAYLIST, RESET_SELECTED_TRACK, ADD_TO_PLAYLIST_ACTIONS, SELECT_TRACK, GET_SPOTIFY_PLAYLISTS_ACTIONS, CHANGE_PROVIDER, SAVE_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLISTS_ACTIONS, GET_MIXED_PLAYLISTS_ACTIONS } from './constants';
+import { ADD_PLAYLIST_TO_PLAYLIST_ACTIONS, SWITCH_IS_ADDING_PLAYLIST, RESET_SELECTED_TRACK, ADD_TO_PLAYLIST_ACTIONS, SELECT_TRACK, CHANGE_PROVIDER, SAVE_PLAYLIST_ACTIONS, GET_PLAYLISTS_ACTIONS } from './constants';
 import { LibraryReducerState, LibraryAction } from './types';
 
 const initialState = {
@@ -47,20 +47,16 @@ export default (state: LibraryReducerState = initialState, action: LibraryAction
                     ...state,
                     loadingSavePlaylist: false
                 }
-        case GET_SPOTIFY_PLAYLISTS_ACTIONS.loading:
-        case GET_MIXED_PLAYLISTS_ACTIONS.loading:
-        case GET_SOUNDCLOUD_PLAYLISTS_ACTIONS.loading:
+        case GET_PLAYLISTS_ACTIONS.loading:
             return {
                 ...state,
                 loadingGetPlaylists: true
             };
-        case GET_SPOTIFY_PLAYLISTS_ACTIONS.success:
-        case GET_SOUNDCLOUD_PLAYLISTS_ACTIONS.success:
-        case GET_MIXED_PLAYLISTS_ACTIONS.success:
+        case GET_PLAYLISTS_ACTIONS.success:
             return {
                 ...state,
                 loadingGetPlaylists: false,
-                playlists: action.payload.items
+                playlists: action.payload.playlists
             }
         case CHANGE_PROVIDER:
             return {

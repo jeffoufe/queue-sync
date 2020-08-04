@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, RadioGroup, Radio, Card } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { AUTHORIZE_SPOTIFY, SELECT_DEVICE_SPOTIFY, LOGOUT_SPOTIFY, GET_DEVICES_SPOTIFY } from '../../reducers/user/constants';
+import { AUTHORIZE_SPOTIFY_ACTIONS, SELECT_DEVICE_SPOTIFY, LOGOUT_SPOTIFY, GET_DEVICES_SPOTIFY } from '../../reducers/user/constants';
 import { SpotifyDeviceObject } from '../../reducers/user/types';
 
 export default () => {
@@ -12,7 +12,7 @@ export default () => {
     const findDeviceIndex = (id: string) => spotify.devices.findIndex((device: SpotifyDeviceObject) => device.id === id)
 
     const onPressButton = async () => {
-        dispatch({ type: AUTHORIZE_SPOTIFY })
+        dispatch({ type: AUTHORIZE_SPOTIFY_ACTIONS.saga })
     }
 
     const onPressDisconnectButton = () => {

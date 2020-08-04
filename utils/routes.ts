@@ -8,6 +8,10 @@ export default [
         name: 'Queue'
     },
     {
+        Component: Settings,
+        name: 'Settings'
+    },
+    {
         Component: Library,
         name: 'Library'
     },
@@ -18,10 +22,6 @@ export default [
     {
         Component: Search,
         name: 'Search'
-    },
-    {
-        Component: Settings,
-        name: 'Settings'
     },
     {
         Component: NewHome,

@@ -1,4 +1,4 @@
-export const generateActions = (reducerName: string, actionName: string) => {
+export default (reducerName: string, actionName: string) => {
     const prefix = `${reducerName}/${actionName}`;
     return {
         saga: prefix,

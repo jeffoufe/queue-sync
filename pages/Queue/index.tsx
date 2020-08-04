@@ -3,6 +3,7 @@ import { View, Text, Alert, StyleSheet, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TopNavigation, Modal, TrackList, Content, Header } from '../../components';
 import { GET_PARTY_ACTIONS } from '../../reducers/queue/constants';
+import { GET_CREDENTIALS_ACTIONS } from '../../reducers/user/constants';
 import QRCode from 'react-native-qrcode-svg';
 import { Icon } from '@ui-kitten/components';
 import { REFRESH_SPOTIFY } from '../../reducers/user/constants';
@@ -23,6 +24,15 @@ export default ({ navigation }: QueueProps) => {
                 id: _id
             }
         });
+    }
+
+    const getCredentials = () => {
+        dispatch({
+            type: GET_CREDENTIALS_ACTIONS.saga,
+            urlParams: {
+                id: _id
+            }
+        })
     }
 
     const refreshToken = () => {
@@ -48,6 +58,7 @@ export default ({ navigation }: QueueProps) => {
 
     useEffect(() => {
         getParty();
+        getCredentials();
         refreshToken();
         return showWarning;
       

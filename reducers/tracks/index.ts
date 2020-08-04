@@ -1,12 +1,8 @@
 import { TracksAction, TracksReducerState } from './types';
 import { 
     CHANGE_PROVIDER, 
-    FETCH_TRACKS_ERROR, 
-    FETCH_TRACKS_SUCCESS, 
-    FETCH_TRACKS_LOADING,
-    FETCH_PLAYLISTS_LOADING,
-    FETCH_PLAYLISTS_ERROR,
-    FETCH_PLAYLISTS_SUCCESS
+    FETCH_PLAYLISTS_ACTIONS,
+    FETCH_TRACKS_ACTIONS
 } from './constants'
 
 const initialProviderState = {
@@ -18,7 +14,7 @@ const initialProviderState = {
 };
 
 const initialState = {
-    currentProviderIndex: 1,
+    currentProviderIndex: 0,
     spotify: initialProviderState,
     soundcloud: initialProviderState,
     youtube: initialProviderState,
@@ -37,7 +33,7 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                 ...state,
                 currentProviderIndex: action.payload.currentProviderIndex
             };
-        case FETCH_TRACKS_LOADING:
+        case FETCH_TRACKS_ACTIONS.loading:
             return { 
                 ...state,
                 [action.payload.provider]: {
@@ -46,17 +42,17 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                     loading: true 
                 }
             }
-        case FETCH_TRACKS_SUCCESS:
+        case FETCH_TRACKS_ACTIONS.success:
             return { 
                 ...state, 
                 [action.payload.provider]: {
-                    ...state.spotify,
+                    ...state[action.payload.provider],
                     loading: false,
                     tracks: action.payload.tracks,
                     error: ''
                 },
             }
-        case FETCH_PLAYLISTS_LOADING:
+        case FETCH_PLAYLISTS_ACTIONS.loading:
             return {
                 ...state,
                 playlists: {
@@ -65,7 +61,7 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                     search: action.payload.search
                 }
             }
-        case FETCH_PLAYLISTS_SUCCESS:
+        case FETCH_PLAYLISTS_ACTIONS.success:
             return {
                 ...state,
                 playlists: {
@@ -75,7 +71,7 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                 },
                 
             }
-        case FETCH_PLAYLISTS_ERROR:
+        case FETCH_PLAYLISTS_ACTIONS.error:
             return {
                 ...state,
                 playlists: {
@@ -84,7 +80,7 @@ export default (state: TracksReducerState = initialState, action: TracksAction) 
                     error: action.payload.error
                 },
             }
-        case FETCH_TRACKS_ERROR:
+        case FETCH_TRACKS_ACTIONS.error:
             return {
                 ...state,
                 [action.payload.provider]: {

@@ -1,6 +1,6 @@
 import { ADD_TO_QUEUE_ACTIONS, DELETE_FROM_QUEUE_ACTIONS, ADD_PLAYLIST_TO_QUEUE } from '../../reducers/queue/constants';
-import { SAVE_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLISTS_ACTIONS, SELECT_TRACK, DELETE_FROM_PLAYLIST_ACTIONS } from '../../reducers/library/constants';
-import { GET_MIXED_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants';
+import { SAVE_PLAYLIST_ACTIONS, SELECT_TRACK, DELETE_FROM_PLAYLIST_ACTIONS, GET_PLAYLISTS_ACTIONS, DELETE_PLAYLIST_ACTIONS } from '../../reducers/library/constants';
+import { GET_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants';
 
 export const ACTIONS = (dispatch: any, navigation: any, id: string) => ({
     addToQueue: {
@@ -8,7 +8,7 @@ export const ACTIONS = (dispatch: any, navigation: any, id: string) => ({
         icon: 'plus',
         action: (track: any) => dispatch({
             type: ADD_TO_QUEUE_ACTIONS.saga,
-            payload: { tracks: [track] },
+            payload: { tracks: [{ ...track, userId: id }] },
             urlParams: { id }
         })
     },
@@ -27,14 +27,28 @@ export const ACTIONS = (dispatch: any, navigation: any, id: string) => ({
             type: DELETE_FROM_QUEUE_ACTIONS.saga,
             urlParams: {
                 id,
-                trackId: track.id
+                trackId: track['_id']
+            }
+        })
+    },
+    deletePlaylist: {
+        title: 'Delete playlist',
+        icon: 'close-circle-outline',
+        action: (playlist: any) => dispatch({
+            type: DELETE_PLAYLIST_ACTIONS.saga,
+            urlParams: { id, playlistId: playlist.id },
+            successCallback: () => {
+                dispatch({
+                    type: GET_PLAYLISTS_ACTIONS.saga,
+                    urlParams: { id, type: 1 },
+                });
             }
         })
     },
     deleteFromPlaylist: {
         title: 'Delete from playlist',
         icon: 'close-circle-outline',
-        action: (track: any, playlistId: string) => dispatch({
+        action: (track: any, playlistId: string, type: number) => dispatch({
             type: DELETE_FROM_PLAYLIST_ACTIONS.saga,
             urlParams: {
                 id,
@@ -44,10 +58,11 @@ export const ACTIONS = (dispatch: any, navigation: any, id: string) => ({
             },
             successCallback: () => {
                 dispatch({
-                    type: GET_MIXED_PLAYLIST_ACTIONS.saga,
+                    type: GET_PLAYLIST_ACTIONS.saga,
                     urlParams: { 
                         id,
-                        playlistId
+                        playlistId,
+                        type: -1
                     },
                 });
             }
@@ -73,8 +88,8 @@ export const ACTIONS = (dispatch: any, navigation: any, id: string) => ({
             urlParams: { id },
             successCallback: () => {
                 dispatch({
-                    type: GET_SOUNDCLOUD_PLAYLISTS_ACTIONS.saga,
-                    urlParams: { id },
+                    type: GET_PLAYLISTS_ACTIONS.saga,
+                    urlParams: { id, type: 1 },
                 });
                 navigation.navigate('Playlist')
             }

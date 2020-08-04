@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TopNavigation, TrackList, Content, Header, List, DropdownModal } from '../../components';
-import { GET_SPOTIFY_PLAYLIST_ACTIONS, GET_SOUNDCLOUD_PLAYLIST_ACTIONS, GET_MIXED_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants'
+import { GET_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants'
 import { MIXED, SOUNDCLOUD, SWITCH_IS_ADDING_PLAYLIST, CHANGE_PROVIDER } from '../../reducers/library/constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
@@ -20,23 +20,12 @@ export default ({ navigation }: TrackListProps) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const actions = (() => {
-            switch (currentProvider) {
-                case SPOTIFY:
-                    return GET_SPOTIFY_PLAYLIST_ACTIONS;
-                case SOUNDCLOUD:
-                    return GET_SOUNDCLOUD_PLAYLIST_ACTIONS;
-                case MIXED:
-                default:
-                    return GET_MIXED_PLAYLIST_ACTIONS;
-            }
-        })();
-
         dispatch({
-            type: actions.saga,
+            type: GET_PLAYLIST_ACTIONS.saga,
             urlParams: {
                 id: _id,
-                playlistId: id
+                playlistId: id,
+                type: currentProvider
             }
         });
     }, [id]);
@@ -62,7 +51,7 @@ export default ({ navigation }: TrackListProps) => {
         { title: 'Add A Playlist', icon: 'plus', onPress: onOpenProviderModal },
         ...playlists.map((playlist: any) => ({
             title: playlist.name,
-            avatar: playlist.images[0].url,
+            avatar: playlist.images,
             description: `${playlist.type === SPOTIFY ? 'Spotify' : 'SoundCloud'} Playlist`
         }))
     ]

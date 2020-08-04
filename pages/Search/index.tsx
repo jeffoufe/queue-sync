@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { TrackList, TopNavigation, DropdownModal, Content } from '../../components';
-import { CHANGE_PROVIDER, FETCH_PLAYLISTS } from '../../reducers/tracks/constants';
-import { PROVIDERS, FETCH_TRACKS } from '../../reducers/tracks/constants';
+import { CHANGE_PROVIDER, FETCH_PLAYLISTS_ACTIONS, FETCH_TRACKS_ACTIONS, PROVIDERS } from '../../reducers/tracks/constants';
 
 interface QueueProps {
     navigation: any
@@ -10,15 +9,24 @@ interface QueueProps {
 
 export default ({ navigation }: QueueProps) => {
     const [ isModalOpen, setModalOpen ] = useState(true);
-    const { _id } = useSelector((state: any) => state.queue);
     const tracksReducer = useSelector((state: any) => state.tracks);
+    const { _id } = useSelector((state: any) => state.queue);
     const { currentProviderIndex } = tracksReducer;
-    const provider = currentProviderIndex >= 0 ? PROVIDERS[currentProviderIndex]. toLowerCase() : 'playlists';
+    const provider = currentProviderIndex >= 0 ? PROVIDERS[currentProviderIndex].toLowerCase() : 'playlists';
     const { loading, tracks, playlists } = tracksReducer[provider]
     const dispatch = useDispatch();
 
     const onSearch = (search: string) => {
-        dispatch({ type: currentProviderIndex >= 0 ? FETCH_TRACKS : FETCH_PLAYLISTS, payload: { search } })
+        dispatch({ 
+            type: currentProviderIndex >= 0 
+                ? FETCH_TRACKS_ACTIONS.saga 
+                : FETCH_PLAYLISTS_ACTIONS.saga, 
+            loadingPayload: {
+                provider: currentProviderIndex === 0 ? 'spotify' : 'soundcloud',
+                search
+            },
+            urlParams: { id: _id, q: search, type: currentProviderIndex },
+        })
     }
 
     return (
@@ -47,7 +55,7 @@ export default ({ navigation }: QueueProps) => {
                     dispatch({ type: CHANGE_PROVIDER, payload: { currentProviderIndex } })
                 }}
             />}
-            <Content>
+            <Content noPadding>
                 <TrackList 
                     navigation={navigation}
                     tracks={currentProviderIndex === -1 ? playlists : tracks}

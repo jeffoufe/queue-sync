@@ -1,11 +1,10 @@
 import { UserAction, UserReducerState } from './types';
 import { REHYDRATE } from 'redux-persist';
 import { 
-    LOGOUT_SPOTIFY, 
-    AUTHORIZE_SPOTIFY_SUCCESS, 
-    AUTHORIZE_SPOTIFY_LOADING, 
+    LOGOUT_SPOTIFY,
     SELECT_DEVICE_SPOTIFY,
-    AUTHORIZE_SPOTIFY
+    AUTHORIZE_SPOTIFY_ACTIONS,
+    GET_CREDENTIALS_ACTIONS
 } from './constants'
 
 const initialProviderState = {
@@ -34,13 +33,18 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
                 ...state,
                 spotify: {
                     ...state.spotify,
-                    accessToken: "BQB7dJjuNH-M1SxiKPM53BJSoezt-gPCNqncvQAT_ZUcWJPepd-WSveg-l25-Jcau3ujA1WK-LHOFKWbYaU63VoTg3vF-QcLFA_WzPLhcIpgnIREJBKEB_ga922WYQeYiJ7deVcTbHLBHj7F53AjcnCKA-UdojzGDHVsCD3LiPFay-8uy4wfLL1KYNAEIBpapMljTf5y4AcxqHHUCdXc38UsBT-Mn4R9hyxd_9H41f_DjPwpRJ_C_TR559D_dSxNL-vsUdYoleWEToo",
-                    refreshToken: "AQBhQVbgXrqPiLFFLqFaxqU2iGDsSW27hpoEKyxpXkMhmAAm59TYAIMDVu9ijIWQ3OUsNF4U9tltfYlDHMlsfUt8BZczDX3nnkpuuEp45HbqSfj3meLNQtQlFtaYn-b6V4c",
-                    expirationTime: 1596041543984,
+                    accessToken: "BQBwJGrbifiFnz4RSoGfPZiBqpppJwXlZRLH7InZVt8DumFtt7bDzn_Q5C7xRDyfIL0cRQQY8Y80Aq3ZDjBQYc3Qmd_zJrlqFV0ly6NrR9PkBNlJIL6AaUvYRHQPfne5JcWq4jZrRqtUAqspupmmK45G3OtwKcL19e4kFe3suXvqzDd63jmg-ja7b3iBUGWzy-lCZvJNc8C50yeTetLTIZXmG_zuySUuiJZ4iQAWHBSd4u4IFz_pYY1SVmLWM0pw43kuvPXZFXPSJBw",
+                    refreshToken: "AQBoKb75mZUxTb3d1ZhD9xeuqaHPBlELfer6I3bHffRW7Yopt70q-OZtJCEVgdB-uPUcr0jHOOsuOL4d-UeYXYYM0jwGR5GBZIyB99t9A7rYJQis4oGMHaaQ-1IWM30ctME",
+                    expirationTime: 1596123830193,
                     deviceID: "06fce6b33fb7673d0570feb59ff87429ecdb58a3"
                 }
             } */
-        case AUTHORIZE_SPOTIFY_LOADING:
+        case GET_CREDENTIALS_ACTIONS.success:
+            return {
+                ...state,
+                ...action.payload.credentials
+            }
+        case AUTHORIZE_SPOTIFY_ACTIONS.loading:
             return { 
                 ...state,
                 spotify: {
@@ -51,7 +55,7 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
                     expirationTime: action.payload.expirationTime,
                 }
             }
-        case AUTHORIZE_SPOTIFY_SUCCESS:
+        case AUTHORIZE_SPOTIFY_ACTIONS.success:
             return {
                 ...state,
                 spotify: {

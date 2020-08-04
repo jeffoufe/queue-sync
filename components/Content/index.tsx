@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 
 interface ContentProps {
     children: React.ReactNode,
-    loading?: boolean
+    loading?: boolean,
+    noPadding?: boolean
 }
 
-export default ({ children, loading }: ContentProps) => {
+export default ({ children, loading, noPadding }: ContentProps) => {
     const { tracks } = useSelector((state: any) => state.queue);
     const { selectedTrack } = useSelector((state: any) => state.library);
 
@@ -26,8 +27,7 @@ export default ({ children, loading }: ContentProps) => {
             position: 'absolute',
             width: '100%',
             top: 56 + (StatusBar.currentHeight || 0),
-            paddingTop: 15,
-            paddingHorizontal: 15,
+            padding: noPadding ? 0 : 15,
             bottom,
             overflow: 'scroll'
         },

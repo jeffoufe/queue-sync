@@ -1,11 +1,7 @@
 import {
-    FETCH_TRACKS_SUCCESS, 
-    FETCH_TRACKS_ERROR, 
-    FETCH_TRACKS_LOADING,
+    FETCH_PLAYLISTS_ACTIONS,
+    FETCH_TRACKS_ACTIONS
     CHANGE_PROVIDER,
-    FETCH_PLAYLISTS_SUCCESS,
-    FETCH_PLAYLISTS_LOADING,
-    FETCH_PLAYLISTS_ERROR
 } from './constants';
 
 interface ChangeProviderAction {
@@ -16,7 +12,7 @@ interface ChangeProviderAction {
 }
 
 interface FetchTracksLoadingAction {
-    type: typeof FETCH_TRACKS_LOADING,
+    type: typeof FETCH_TRACKS_ACTIONS.loading,
     payload: {
         search: string,
         provider: string
@@ -24,7 +20,7 @@ interface FetchTracksLoadingAction {
 }
   
 interface FetchTracksSuccessAction {
-    type: typeof FETCH_TRACKS_SUCCESS,
+    type: typeof FETCH_TRACKS_ACTIONS.success,
     payload: {
         tracks: Array<any>,
         provider: string
@@ -32,7 +28,7 @@ interface FetchTracksSuccessAction {
 }
 
 interface FetchTracksErrorAction {
-    type: typeof FETCH_TRACKS_ERROR,
+    type: typeof FETCH_TRACKS_ACTIONS.error,
     payload: {
         error: string,
         provider: string
@@ -40,21 +36,21 @@ interface FetchTracksErrorAction {
 }
 
 interface FetchPlaylistsLoadingAction {
-    type: typeof FETCH_PLAYLISTS_LOADING,
+    type: typeof FETCH_PLAYLISTS_ACTIONS.loading,
     payload: {
         search: string
     }
 }
 
 interface FetchPlaylistsSuccessAction {
-    type: typeof FETCH_PLAYLISTS_SUCCESS,
+    type: typeof FETCH_PLAYLISTS_ACTIONS.success,
     payload: {
         playlists: Array<any>
     }
 }
 
 interface FetchPlaylistsErrorAction {
-    type: typeof FETCH_PLAYLISTS_ERROR,
+    type: typeof FETCH_PLAYLISTS_ACTIONS.error,
     payload: {
         error: string
     }

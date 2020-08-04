@@ -21,6 +21,7 @@ import {
     ADD_PLAYLIST_TO_QUEUE
 } from './constants';
 import { formatSpotifyTrack, formatSoundCloudTracks } from '../tracks/utils';
+import { SPOTIFY, SOUNDCLOUD } from '../library/constants';
 
 function* playSpotifyTrack(track: Track) {
     const { timerId, remainingTime } = yield select((state: any) => state.queue);
@@ -106,10 +107,10 @@ function* playTrack() {
     }
     let playFn;
     switch(track.type) {
-        case 'spotify':
+        case SPOTIFY:
             playFn = playSpotifyTrack;
             break;
-        case 'soundcloud':
+        case SOUNDCLOUD:
             playFn = playSoundCloudTrack;
             break;
         case 'youtube':
@@ -183,11 +184,11 @@ function* pauseCurrentTrack(isFinished = false) {
     const { tracks } = yield select((state: any) => state.queue);
     const currentTrack = tracks[0];
     switch (currentTrack.type) {
-        case 'soundcloud':
+        case SOUNDCLOUD:
         case 'youtube':
             yield call(pauseSoundCloudTrack, isFinished);
             break;
-        case 'spotify':
+        case SPOTIFY:
             yield call(pauseSpotifyTrack, isFinished);
             break;
             
@@ -255,15 +256,15 @@ function* getTracksFromPlaylist(action: any) {
     const { playlistId, type } = action.payload;
     const { _id } = yield select((state: any) => state.queue);
     switch (type) {
-        case 'spotify':
+        case SPOTIFY:
             const { accessToken } = yield select((state: any) => state.user.spotify);
             const response = yield axios({
                 url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
                 method: 'GET',
                 headers: { Authorization: `Bearer ${accessToken}` }
             })
-            return response.data.items.map((item: any) => formatSpotifyTrack(item.track));
-        case 'soundcloud':
+            return response.data.items.map((item: any) => formatSpotifyTrack(item.track, _id));
+        case SOUNDCLOUD:
             const idsResponse = yield axios({
                 url: `${domain}/parties/${_id}/sc-playlists/${playlistId}/tracks`,
                 method: 'GET',
@@ -272,7 +273,7 @@ function* getTracksFromPlaylist(action: any) {
                 `https://api-v2.soundcloud.com/tracks?ids=${idsResponse.data.slice(0, 50)}&client_id=LwwkfCVkKXcE8djbcXfrQLnZZBqZk3f3&%5Bobject%20Object%5D=&app_version=1595844156&app_locale=en`
             );
             const responseJSON = yield tracksResponse.json();
-            return formatSoundCloudTracks({ collection: responseJSON });       
+            return formatSoundCloudTracks({ collection: responseJSON }, _id);       
         default:
             return [];
     }

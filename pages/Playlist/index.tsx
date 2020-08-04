@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { TopNavigation, TrackList, Content, Modal, Input } from '../../components';
 import { Playlist } from '../../reducers/library/types';
-import { 
-    GET_SPOTIFY_PLAYLISTS_ACTIONS, 
-    GET_SOUNDCLOUD_PLAYLISTS_ACTIONS, 
-    GET_MIXED_PLAYLISTS_ACTIONS, 
+import {
     CREATE_MIXED_PLAYLIST_ACTIONS,
     SPOTIFY, 
     SOUNDCLOUD, 
     MIXED, 
     ADD_TO_PLAYLIST_ACTIONS,
     RESET_SELECTED_TRACK,
-    ADD_PLAYLIST_TO_PLAYLIST_ACTIONS
+    ADD_PLAYLIST_TO_PLAYLIST_ACTIONS,
+    GET_PLAYLISTS_ACTIONS
 } from '../../reducers/library/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { GO_TO_PLAYLIST } from '../../reducers/trackList/constants';
@@ -35,15 +33,15 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
             successCallback: () => {
                 setShowCreationModal(false);
                 dispatch({ 
-                    type: GET_MIXED_PLAYLISTS_ACTIONS.saga,
-                    urlParams: { id: _id }
+                    type: GET_PLAYLISTS_ACTIONS.saga,
+                    urlParams: { id: _id, type: -1 }
                 })
             },
             payload: {
                 playlist: {
                     userId: _id,
                     name: playlistName,
-                    images: [{}]
+                    image: ''
                 }
             }
         })
@@ -86,7 +84,7 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
             },
             successCallback: () => {
                 dispatch({ 
-                    type: GET_MIXED_PLAYLISTS_ACTIONS.saga,
+                    type: GET_PLAYLISTS_ACTIONS.saga,
                     urlParams: { id: _id }
                 });
                 navigation.goBack();
@@ -98,21 +96,22 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
         switch(currentProvider) {
             case MIXED:
                 return {
-                    actions: GET_MIXED_PLAYLISTS_ACTIONS,
-                    urlParams: { id: _id },
+                    actions: GET_PLAYLISTS_ACTIONS,
+                    urlParams: { id: _id, type: -1 },
                     title: 'Your Mixed Playlists'
                 }
             case SPOTIFY:
                 return {
-                    actions: GET_SPOTIFY_PLAYLISTS_ACTIONS,
+                    actions: GET_PLAYLISTS_ACTIONS,
+                    urlParams: { id: _id, type: 0 },
                     title: 'Your Spotify Playlists',
                 }
             case SOUNDCLOUD:
             default:
                 return {
-                    actions: GET_SOUNDCLOUD_PLAYLISTS_ACTIONS,
+                    actions: GET_PLAYLISTS_ACTIONS,
                     title: 'Your SoundCloud Playlists',
-                    urlParams: { id: _id },
+                    urlParams: { id: _id, type: 1 },
                 }
         }
     })();
@@ -126,22 +125,19 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
 
     const data = playlists.map((playlist: Playlist) => { 
         const onPress = () => {
-            const playlistId = playlist.id || playlist['_id'];
+            const { id, image, name } = playlist;
             if (selectedTrack) {
-                addToPlaylist(playlistId);
+                addToPlaylist(id);
             } 
             else if (playlistToBeAdded) { 
-                addPlaylistToPlaylist(playlistId, playlist.name, playlist.images);
+                addPlaylistToPlaylist(id, name, image);
             }  
             else {
-                goToTrackList(playlistId, playlist.name, playlist.ids)
+                goToTrackList(id, name, playlist.ids)
             }
         };
         return {
-            name: playlist.name,
-            image: playlist.images[0].url,
-            type: playlist.type,
-            id: playlist.id || playlist['_id'],
+            ...playlist,
             onPress
         }
     })
@@ -199,7 +195,7 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
                     tracks={data}
                     actions={(!!selectedTrack || !!playlistToBeAdded)
                         ? []
-                        : ['addPlaylistToQueue']
+                        : ['addPlaylistToQueue', ...(currentProvider === 1 ? ['deletePlaylist'] : [])]
                     }
                 />
             </Content>

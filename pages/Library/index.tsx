@@ -49,7 +49,7 @@ export default ({ navigation }: NewHomeProps) => {
     ); */
 
     const data = [
-        ...(!selectedTrack || selectedTrack.type === 'spotify' 
+        ...(!selectedTrack || selectedTrack.type === SPOTIFY 
             ? [{ title: 'Your Spotify Playlists', icon: 'list-outline', onPress: goToSpotifyPlaylists, accessory: { icon: 'arrow-ios-forward-outline' } }]
             : []
         ),

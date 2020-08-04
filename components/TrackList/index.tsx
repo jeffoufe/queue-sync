@@ -58,7 +58,7 @@ export default ({ tracks, onPressPlay, navigation, actions }: TrackListProps) =>
 
     const onCloseModal = () => setSelectedTrack(null);
 
-    const dataActions = actions.map((action: string) => renderItem({
+    const dataActions = actions.map((action: string, index: number) => renderItem({
         item: {
             title: allActions[action].title,
             icon: allActions[action].icon,
@@ -68,7 +68,7 @@ export default ({ tracks, onPressPlay, navigation, actions }: TrackListProps) =>
             }
         },
         noBorder: true
-    }))
+    }, index))
 
     return <>
         <List data={data} />

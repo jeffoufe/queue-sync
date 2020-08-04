@@ -9,9 +9,7 @@ export interface Playlist {
     name: string,
     ids: Array<string>,
     selectedTrack: any,
-    images: Array<{
-        url: string
-    }>
+    image: string
 }
 
 export interface LibraryReducerState {
