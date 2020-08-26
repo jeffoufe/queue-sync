@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { NavigationContainer } from '@react-navigation/native';
@@ -18,6 +18,22 @@ const generateRouteComponent = (navigation: any, Component: any) => (
 )
 
 export default function App() {
+  /*useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://cdns-files.dzcdn.net/js/min/dz.js";
+    script.async = true;
+    script.onload = () => {
+      console.log(window.DZ);
+    }
+  
+    document.body.appendChild(script);
+
+  
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []); */
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>

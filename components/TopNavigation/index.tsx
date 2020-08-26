@@ -38,13 +38,15 @@ export default ({ title, rightControls, onSearch, leftControl }: TopNavigationPr
   if (rightControls) {
     props.accessoryRight = () => (
       <>
-        {rightControls.map((rightControl: TopNavigationControl, index: number) => generateAction(rightControl, index))}
+        {rightControls.map(
+          (rightControl: TopNavigationControl, index: number) => generateAction(rightControl, index)
+        )}
       </>
     );
   }
   
   if (leftControl) {
-    props.accessoryLeft = () => generateAction(leftControl)
+    props.accessoryLeft = () => generateAction(leftControl, 0)
   }
 
   if (onSearch) {
@@ -88,13 +90,11 @@ export default ({ title, rightControls, onSearch, leftControl }: TopNavigationPr
 const styles = StyleSheet.create({
   search: {
     position: 'absolute',
-    // border: 'none',
-    width: '70%',
+    width: '75%',
     top: getStatusBarHeight() + 18,
     fontSize: 16,
-    // outline: 'none',
     height: 20,
-    left: 65
+    left: 20
   },
   topNavigation: {
     marginTop: getStatusBarHeight(),

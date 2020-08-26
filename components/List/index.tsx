@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, GestureResponderEvent } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, GestureResponderEvent, ActivityIndicator } from 'react-native';
 import { Icon, ListItem, List, Avatar } from '@ui-kitten/components';
 
 interface ListItemProps {
@@ -17,7 +17,9 @@ interface ListItemProps {
 };
 
 interface ListProps {
-    data: Array<ListItemProps>
+    loading?: boolean,
+    data: Array<ListItemProps>,
+    onEndReached?: () => void
 };
 
 export const renderItem = ({ item: { icon, avatar, title, description, progress, onPress, accessory }, noBorder }: { item: ListItemProps, noBorder: boolean }, key?: number) => {
@@ -73,17 +75,32 @@ export const renderItem = ({ item: { icon, avatar, title, description, progress,
     )
 }
 
-export default ({ data }: ListProps) => (
-    <List 
-        data={data}
-        renderItem={({ item }) => renderItem({ item, noBorder: false })}
-        style={styles.list}
+const LoadingFooter = () => (
+    <ActivityIndicator 
+        style={styles.footer} 
+        size="small" 
+        color="#FF6721"
     />
 )
+
+export default ({ data, loading }: ListProps) => {
+    return ( 
+        <List 
+            data={data}
+            renderItem={({ item }) => renderItem({ item, noBorder: false })}
+            style={styles.list}
+            ListFooterComponent={loading ? LoadingFooter : null}
+        />
+    )
+}
 
 const styles = StyleSheet.create({
     list: {
         backgroundColor: '#F2F2F2'
+    },
+    footer: {
+        backgroundColor: 'white',
+        padding: 10,
     },
     iconText: {
         textAlign: 'center',

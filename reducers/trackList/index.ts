@@ -1,12 +1,14 @@
 import { TrackListAction, TrackListReducerState } from './types';
-import { GO_TO_PLAYLIST, GET_PLAYLIST_ACTIONS } from './constants'
+import { GO_TO_PLAYLIST, GET_PLAYLIST_ACTIONS, RESET_TRACKLIST } from './constants'
 
 const initialState = {
     tracks: [],
     loading: false,
+    offset: 0,
     name: '',
     id: null,
     ids: [],
+    total: 0,
     playlists: [],
 }
 
@@ -28,9 +30,13 @@ export default (state: TrackListReducerState = initialState, action: TrackListAc
             return { 
                 ...state,
                 loading: false,
-                tracks: action.payload.tracks,
+                offset: state.offset + 50,
+                total: action.payload.total,
+                tracks: [...state.tracks, ...action.payload.tracks],
                 playlists: action.payload.playlists || []
             }
+        case RESET_TRACKLIST:
+            return initialState;
         default:
             return state;
     }

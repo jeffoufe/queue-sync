@@ -1,13 +1,28 @@
-// import { put, takeEvery, select, call } from 'redux-saga/effects'
-// import * as AuthSession from 'expo-auth-session';
-import { generateSaga, domain } from '../../utils';
+import { put, takeEvery, call } from 'redux-saga/effects';
+import { domain } from '../../utils';
 import { GET_CREDENTIALS_ACTIONS } from './constants'; 
+import { refreshSpotify } from './refresh/spotify';
+import axios from 'axios';
 
-export const watchGetCredentials = generateSaga({
-    ...GET_CREDENTIALS_ACTIONS,
-    url: ({ id }: { id: string }) => `${domain}/parties/${id}/credentials`,
-    method: 'GET'
-})
+function* getCredentials(action: any) {
+    const { id } = action.payload;
+
+    const response = yield axios({
+        method: 'GET',
+        url: `${domain}/parties/${id}/credentials`,
+    });
+
+    yield put({
+        type: GET_CREDENTIALS_ACTIONS.success,
+        payload: response.data
+    });
+
+    yield call(refreshSpotify);
+}
+
+export function* watchGetCredentials() {
+    yield takeEvery(GET_CREDENTIALS_ACTIONS.saga, getCredentials)
+}
 
 /* function* authorizeDeezer() {
     const result = yield AuthSession.startAsync({

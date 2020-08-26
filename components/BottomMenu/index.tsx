@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { BottomNavigation, BottomNavigationTab, Icon, IconProps } from '@ui-kitten/components';
@@ -25,7 +25,6 @@ const LibraryIcon = (props: IconProps) => (
 );
 
 export default ({ navigation }: BottomMenuProps) => {
-    const [_, setSelectedIndex] = useState(0);
     const dispatch = useDispatch();
     const selectedIndex = useSelector((state: any) => state.router.index)
     const titles = ['Queue', 'Search', 'Library', 'Settings'];

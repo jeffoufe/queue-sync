@@ -1,8 +1,9 @@
 import { TracksAction, TracksReducerState } from './types';
 import { 
-    CHANGE_PROVIDER, 
     FETCH_PLAYLISTS_ACTIONS,
-    FETCH_TRACKS_ACTIONS
+    FETCH_TRACKS_ACTIONS,
+    CHANGE_PROVIDER_ACTIONS,
+    RESET_SEARCH
 } from './constants'
 
 const initialProviderState = {
@@ -28,10 +29,14 @@ const initialState = {
 
 export default (state: TracksReducerState = initialState, action: TracksAction) => {
     switch (action.type) {
-        case CHANGE_PROVIDER:
+        case RESET_SEARCH:
+            return initialState;
+        case CHANGE_PROVIDER_ACTIONS.success:
             return {
                 ...state,
-                currentProviderIndex: action.payload.currentProviderIndex
+                currentProviderIndex: action.payload.currentProviderIndex,
+                spotify: initialState.spotify,
+                soundcloud: initialState.soundcloud,
             };
         case FETCH_TRACKS_ACTIONS.loading:
             return { 

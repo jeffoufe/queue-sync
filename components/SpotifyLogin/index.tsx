@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, RadioGroup, Radio, Card } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { AUTHORIZE_SPOTIFY_ACTIONS, SELECT_DEVICE_SPOTIFY, LOGOUT_SPOTIFY, GET_DEVICES_SPOTIFY } from '../../reducers/user/constants';
+import { AUTHORIZE_SPOTIFY_ACTIONS, SELECT_DEVICE_SPOTIFY_ACTIONS, LOGOUT_SPOTIFY, GET_DEVICES_SPOTIFY } from '../../reducers/user/constants';
 import { SpotifyDeviceObject } from '../../reducers/user/types';
 
 export default () => {
@@ -25,7 +25,7 @@ export default () => {
 
     const onSelectDevice = (selectedIndex: number) => {
         dispatch({
-            type: SELECT_DEVICE_SPOTIFY,
+            type: SELECT_DEVICE_SPOTIFY_ACTIONS.saga,
             payload: { deviceID: spotify.devices[selectedIndex].id }
         })
     }
@@ -47,14 +47,16 @@ export default () => {
             )}
             {spotify && spotify.accessToken && (
                 <>
-                    <Button 
-                        status='basic'
-                        size='small'
-                        style={styles.refreshButton} 
-                        onPress={onPressRefreshButton}
-                    >
-                        REFRESH DEVICES
-                    </Button>
+                    {!spotify.deviceID && (
+                        <Button 
+                            status='basic'
+                            size='small'
+                            style={styles.refreshButton} 
+                            onPress={onPressRefreshButton}
+                        >
+                            REFRESH DEVICES
+                        </Button>
+                    )}
                     <Button 
                         status='basic'
                         size='small'
@@ -70,7 +72,10 @@ export default () => {
 
     return (
         <Card header={Header} footer={Footer} style={styles.card}>
-            {spotify && spotify.devices && (
+            {spotify.deviceID && (
+                <Text>Connected</Text>
+            )}
+            {spotify && spotify.devices && !spotify.deviceID && (
                 <>
                     <Text>Available devices : </Text>
                     {spotify.devices.length

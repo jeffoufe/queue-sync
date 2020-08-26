@@ -12,10 +12,6 @@ export default ({ navigation }: SettingsProps) => {
             <TopNavigation 
                 navigation={navigation} 
                 title='Settings'
-                leftControl={{
-                    icon: 'arrow-back-outline',
-                    onPress: navigation.goBack
-                }}
             />
             <Content>
                 <View style={styles.container}>

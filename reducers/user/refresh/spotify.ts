@@ -5,9 +5,11 @@ import {
     AUTHORIZE_SPOTIFY_ACTIONS
 } from '../constants';
 
-function* refreshSpotify() {
-    /* const { refreshToken, expirationTime } = yield select((state: any) => state.user.spotify);
-    if (refreshToken && expirationTime < Date.now()) {
+export function* refreshSpotify() {
+    const { refreshToken, expirationTime } = yield select((state: any) => state.user.spotify);
+    console.log(refreshToken);
+    console.log(Date.now() > expirationTime);
+    if (refreshToken && Date.now() > expirationTime) {
         const credsB64 = btoa(`${CREDENTIALS.clientId}:${CREDENTIALS.clientSecret}`);
         const tokenResponse = yield fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
@@ -19,6 +21,7 @@ function* refreshSpotify() {
         });
 
         const tokenResponseJSON = yield tokenResponse.json();
+        console.log(tokenResponseJSON);
 
         yield put({ 
             type: AUTHORIZE_SPOTIFY_ACTIONS.loading, 
@@ -28,13 +31,7 @@ function* refreshSpotify() {
                 expirationTime: new Date().getTime() + tokenResponseJSON['expires_in'] * 1000
             }
         });
-    } */
-
-    /* if (Date.now() < expirationTime && !refreshToken) {
-        yield put({ 
-            type: LOGOUT_SPOTIFY
-        })
-    } */
+    }
 }
 
 export function* watchRefreshSpotify() {

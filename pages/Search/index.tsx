@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { TrackList, TopNavigation, DropdownModal, Content } from '../../components';
-import { CHANGE_PROVIDER, FETCH_PLAYLISTS_ACTIONS, FETCH_TRACKS_ACTIONS, PROVIDERS } from '../../reducers/tracks/constants';
+import { FETCH_PLAYLISTS_ACTIONS, FETCH_TRACKS_ACTIONS, PROVIDERS, CHANGE_PROVIDER_ACTIONS } from '../../reducers/tracks/constants';
 
 interface QueueProps {
     navigation: any
@@ -9,6 +9,7 @@ interface QueueProps {
 
 export default ({ navigation }: QueueProps) => {
     const [ isModalOpen, setModalOpen ] = useState(true);
+    const [ searchValue, setSearchValue ] = useState("");
     const tracksReducer = useSelector((state: any) => state.tracks);
     const { _id } = useSelector((state: any) => state.queue);
     const { currentProviderIndex } = tracksReducer;
@@ -27,6 +28,7 @@ export default ({ navigation }: QueueProps) => {
             },
             urlParams: { id: _id, q: search, type: currentProviderIndex },
         })
+        setSearchValue(search);
     }
 
     return (
@@ -34,15 +36,13 @@ export default ({ navigation }: QueueProps) => {
             <TopNavigation 
                 onSearch={onSearch} 
                 navigation={navigation}
-                leftControl={{
-                    icon: 'arrow-back-outline',
-                    onPress: navigation.goBack
-                }}
                 rightControls={currentProviderIndex >= 0
-                    ? [{
-                        icon: 'menu-2-outline',
-                        onPress: () => setModalOpen(true)
-                    }]
+                    ? [
+                        {
+                            icon: 'menu-2-outline',
+                            onPress: () => setModalOpen(true)
+                        }
+                    ]
                     : []}
             />
             {currentProviderIndex > -1 && <DropdownModal 
@@ -52,10 +52,13 @@ export default ({ navigation }: QueueProps) => {
                 title='Choose a provider'
                 selectedIndex={currentProviderIndex}
                 onChange={(currentProviderIndex: number) => {
-                    dispatch({ type: CHANGE_PROVIDER, payload: { currentProviderIndex } })
+                    dispatch({ 
+                        type: CHANGE_PROVIDER_ACTIONS.saga, 
+                        payload: { currentProviderIndex, search: searchValue } 
+                    })
                 }}
             />}
-            <Content noPadding>
+            <Content noPadding loading={loading}>
                 <TrackList 
                     navigation={navigation}
                     tracks={currentProviderIndex === -1 ? playlists : tracks}

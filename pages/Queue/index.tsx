@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Alert, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TopNavigation, Modal, TrackList, Content, Header } from '../../components';
 import { GET_PARTY_ACTIONS } from '../../reducers/queue/constants';
 import { GET_CREDENTIALS_ACTIONS } from '../../reducers/user/constants';
 import QRCode from 'react-native-qrcode-svg';
 import { Icon } from '@ui-kitten/components';
-import { REFRESH_SPOTIFY } from '../../reducers/user/constants';
+
+/* const DZ = require('../../public/js/dz.js');
+console.log(DZ.init); */
 
 interface QueueProps {
     navigation: any,
@@ -29,38 +31,15 @@ export default ({ navigation }: QueueProps) => {
     const getCredentials = () => {
         dispatch({
             type: GET_CREDENTIALS_ACTIONS.saga,
-            urlParams: {
+            payload: {
                 id: _id
             }
         })
     }
 
-    const refreshToken = () => {
-        dispatch({
-            type: REFRESH_SPOTIFY
-        })
-    }
-
-    const showWarning = () => Alert.alert(
-        "Leave the party",
-        "As the party host, the music will stop if you leave the party",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            { 
-                text: "OK", 
-            }
-        ],
-        { cancelable: false }
-    )
-
     useEffect(() => {
         getParty();
         getCredentials();
-        refreshToken();
-        return showWarning;
       
         // setInterval(getParty, 1000);
     }, []);
@@ -98,10 +77,6 @@ export default ({ navigation }: QueueProps) => {
                 navigation={navigation} 
                 title={name ? `${name}'s Queue` : ''}
                 rightControls={rightControls}
-                leftControl={{
-                    icon: 'arrow-back-outline',
-                    onPress: showWarning
-                }}
             />
             
             <Content loading={loadingGetParty}>
@@ -112,7 +87,7 @@ export default ({ navigation }: QueueProps) => {
                             <TrackList 
                                 navigation={navigation}
                                 tracks={[tracks[0]]}
-                                actions={['deleteFromQueue', 'addToPlaylist']}
+                                actions={['addToPlaylist']}
                             />
                             {tracks.length > 1 && (
                                 <>

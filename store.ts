@@ -4,10 +4,10 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { AsyncStorage } from 'react-native'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { tracksReducer, userReducer, queueReducer, routerReducer, libraryReducer, trackListReducer } from './reducers';
-import { watchFetchTracks, watchFetchPlaylists } from './reducers/tracks/sagas';
+import { watchFetchTracks, watchFetchPlaylists, watchChangeProvider } from './reducers/tracks/sagas';
 import { watchAddPlaylistToPlaylist, watchSavePlaylist, watchGetPlaylists, watchCreateMixedPlaylist, watchAddToPlaylist, watchDeleteFromPlaylist, watchDeletePlaylist } from './reducers/library/sagas';
 import { watchPlayTrack, watchNextSong, watchInstantPlayTrack, watchPlayPauseCurrentTrack, watchGetParty, watchCreateParty, watchAddToQueue, watchDeleteFromQueue, watchAddPlaylistToQueue } from './reducers/queue/sagas';
-import { watchAuthorize, watchGetAvailableDevices } from './reducers/user/authorize/spotify';
+import { watchAuthorize, watchGetAvailableDevices, watchSelectDevice } from './reducers/user/authorize/spotify';
 import { watchRefreshSpotify } from './reducers/user/refresh/spotify';
 import { watchGetCredentials } from './reducers/user/sagas';
 import { watchGetPlaylist } from './reducers/trackList/sagas';
@@ -38,6 +38,7 @@ function* rootSaga() {
         watchRefreshSpotify(),
         watchFetchTracks(),
         watchFetchPlaylists(),
+        watchChangeProvider(),
         watchAuthorize(),
         watchGetAvailableDevices(),
         watchPlayTrack(),
@@ -47,7 +48,8 @@ function* rootSaga() {
         watchCreateParty(),
         watchGetParty(),
         watchAddToQueue(),
-        watchDeleteFromQueue()
+        watchDeleteFromQueue(),
+        watchSelectDevice()
     ])
   }
 

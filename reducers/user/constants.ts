@@ -1,13 +1,12 @@
 import generateActions from '../../utils/generateActions';
-import { generateSaga } from '../../utils';
 
 export const REFRESH_SPOTIFY = 'USER/REFRESH_SPOTIFY';
-export const SELECT_DEVICE_SPOTIFY = 'USER/SELECT_DEVICE_SPOTIFY';
 export const LOGOUT_SPOTIFY = 'USER/LOGOUT_SPOTIFY';
 export const GET_DEVICES_SPOTIFY = 'USER/GET_DEVICES_SPOTIFY';
 export const REFRESH_ACCESS_TOKEN = 'USER/REFRESH_ACCESS_TOKEN';
 export const CHECK_SPOTIFY_TOKEN = 'USER/CHECK_SPOTIFY_TOKEN';
 
+export const SELECT_DEVICE_SPOTIFY_ACTIONS = generateActions('USER', 'SELECT_DEVICE_SPOTIFY');
 export const GET_CREDENTIALS_ACTIONS = generateActions('USER', 'GET_CREDENTIALS')
 export const AUTHORIZE_SPOTIFY_ACTIONS = generateActions('USER', 'AUTHORIZE_SPOTIFY');
 

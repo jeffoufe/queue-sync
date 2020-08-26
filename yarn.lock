@@ -5293,13 +5293,6 @@ expo-av@^8.1.0:
     lodash "^4.17.15"
     nullthrows "^1.1.0"
 
-expo-background-fetch@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-8.3.0.tgz#9a848452ad1f39c4322f934b9950c461822376ed"
-  integrity sha512-chKvSyKER8tehssqmMRdyPBd9p3m98n2JLFj1GmHu+MLeqYrzCgYiJImC3H0sKzXCN0pDomUViVD/QLl5jOK2A==
-  dependencies:
-    expo-task-manager "~8.3.0"
-
 expo-barcode-scanner@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/expo-barcode-scanner/-/expo-barcode-scanner-8.1.0.tgz#2f1504465725673a18453d976062b3aab55dd867"
@@ -5312,6 +5305,11 @@ expo-constants@~9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-9.0.0.tgz#35c600079ee91d38fe4f56375caae6e90f122fdd"
   integrity sha512-1kqZMM8Ez5JT3sTEx8I69fP6NYFLOJjeM6Z63dD/m2NiwvzSADiO5+BhghnWNGN1L3bxbgOjXS6EHtS7CdSfxA==
+
+expo-crypto@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/expo-crypto/-/expo-crypto-8.2.1.tgz#307eb857912e231d26babba3aa87963e686f4cac"
+  integrity sha512-P7/gmPEb1mRhEHyhJI4qNKZuW4jq6dkbxG3q6Meo4pbJHsH2xQz/3gokOcZwB4OMd0IJ+5yfRd2gXoqU8D9Xmw==
 
 expo-crypto@~8.1.0:
   version "8.1.0"
@@ -5401,13 +5399,6 @@ expo-sqlite@~8.1.0:
     "@expo/websql" "^1.0.1"
     "@types/websql" "^0.0.27"
     lodash "^4.17.15"
-
-expo-task-manager@~8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-8.3.0.tgz#e8a9dba98087de5c2c851177149411e85e1d1a7f"
-  integrity sha512-hE7DJ/DrCmMQk43erM537UjzAcuLZkwMKMMkuhmnu6gpdjkkGERGUX5Jx8AWmrspVOsK/CO1BZp74+3LJj4sMg==
-  dependencies:
-    unimodules-app-loader "~1.2.0"
 
 expo-updates@~0.1.0:
   version "0.1.1"
@@ -12907,11 +12898,6 @@ unimodules-app-loader@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-1.0.1.tgz#4358195cfa4d6026c71c7365362acf047f252bb0"
   integrity sha512-GhPwdTp9WHRMRnM2ONQsHb0mciKU5tafohEX0+E4F7bSba89r+rJckWQnpDvHE7uyUaRtocLYcbk09vv2eg8ew==
-
-unimodules-app-loader@~1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-1.2.0.tgz#e3ab8942000b0a0ee3bef2faff7e7e276d84c86a"
-  integrity sha512-TZCFuyOfX/iVJf3uhy2WmGnQFUGgsfkVRzUb7mCxPTqqdyvqT7aXxCGM3gY+3Y8dPdCRGoG+EA2vrOe3aLU0qw==
 
 unimodules-barcode-scanner-interface@~5.1.0:
   version "5.1.0"

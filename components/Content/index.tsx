@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, Dimensions, StatusBar } from 'react-native';  
+import { ScrollView, View, StyleSheet, ActivityIndicator, Dimensions, StatusBar } from 'react-native';  
 import { useSelector } from 'react-redux';
 
 interface ContentProps {
@@ -29,7 +29,7 @@ export default ({ children, loading, noPadding }: ContentProps) => {
             top: 56 + (StatusBar.currentHeight || 0),
             padding: noPadding ? 0 : 15,
             bottom,
-            overflow: 'scroll'
+            // overflow: 'scroll'
         },
         loading: {
             position: 'absolute',
@@ -38,18 +38,19 @@ export default ({ children, loading, noPadding }: ContentProps) => {
         }
     })
 
-    return (
-        <View style={styles.container}>
-            {loading 
-                ? (
-                    <ActivityIndicator 
-                        style={styles.loading} 
-                        size="large" 
-                        color="#FF6721"
-                    /> 
-                )
-                : children
-            }
-        </View>
-    )
+    return loading 
+        ? (
+            <View style={styles.container}>
+                <ActivityIndicator 
+                    style={styles.loading} 
+                    size="large" 
+                    color="#FF6721"
+                /> 
+            </View>
+        )
+        : (
+            <ScrollView style={styles.container}>
+                {children}
+            </ScrollView>
+        )
 }

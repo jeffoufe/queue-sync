@@ -2,7 +2,7 @@ import { UserAction, UserReducerState } from './types';
 import { REHYDRATE } from 'redux-persist';
 import { 
     LOGOUT_SPOTIFY,
-    SELECT_DEVICE_SPOTIFY,
+    SELECT_DEVICE_SPOTIFY_ACTIONS,
     AUTHORIZE_SPOTIFY_ACTIONS,
     GET_CREDENTIALS_ACTIONS
 } from './constants'
@@ -64,7 +64,7 @@ export default (state: UserReducerState = initialState, action: UserAction) => {
                     devices: action.payload.devices   
                 }
             }
-        case SELECT_DEVICE_SPOTIFY:
+        case SELECT_DEVICE_SPOTIFY_ACTIONS.success:
             return {
                 ...state,
                 spotify: {

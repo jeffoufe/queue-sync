@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TopNavigation, TrackList, Content, Header, List, DropdownModal } from '../../components';
+import { Button } from '@ui-kitten/components';
 import { GET_PLAYLIST_ACTIONS } from '../../reducers/trackList/constants'
 import { MIXED, SOUNDCLOUD, SWITCH_IS_ADDING_PLAYLIST, CHANGE_PROVIDER } from '../../reducers/library/constants';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,20 +16,37 @@ export default ({ navigation }: TrackListProps) => {
     const { currentProvider } = useSelector((state: any) => state.library);
     const [isModalOpen, setModalOpen] = useState<boolean>(false);
     const [currentProviderIndex, setCurrentProviderIndex] = useState<number>(0);
-    const { id, name, tracks, playlists } = useSelector((state: any) => state.trackList)
+    const { id, name, tracks, playlists, loading, offset, total } = useSelector((state: any) => state.trackList)
     const { _id } = useSelector((state: any) => state.queue);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch({
-            type: GET_PLAYLIST_ACTIONS.saga,
-            urlParams: {
-                id: _id,
-                playlistId: id,
-                type: currentProvider
+    const onLoad = () => {
+        if (total === 0) {
+            dispatch({
+                type: GET_PLAYLIST_ACTIONS.saga,
+                urlParams: {
+                    id: _id,
+                    playlistId: id,
+                    offset: 0,
+                    type: currentProvider
+                }
+            });   
+        } else if (currentProvider !== MIXED) {
+            for (let i = 1; i <= total / 50; i++) {
+                dispatch({
+                    type: GET_PLAYLIST_ACTIONS.saga,
+                    urlParams: {
+                        id: _id,
+                        playlistId: id,
+                        offset: i * 50,
+                        type: currentProvider
+                    }
+                });
             }
-        });
-    }, [id]);
+        }
+    }
+
+    useEffect(onLoad, [id, total]);
 
     const onCloseProviderModal = (isConfirmed: boolean) => {
         setModalOpen(false)
@@ -66,7 +84,7 @@ export default ({ navigation }: TrackListProps) => {
                     onPress: navigation.goBack
                 }}
             />
-            <Content>
+            <Content loading={loading && offset === 0} noPadding={currentProvider !== MIXED}>
                 <View>
                     {currentProvider === MIXED && (
                         <>
@@ -82,15 +100,21 @@ export default ({ navigation }: TrackListProps) => {
                             />
                         </>
                     )}
-                    <Header>Tracks</Header>
-                    <TrackList
-                        navigation={navigation}
-                        tracks={tracks}
-                        actions={[
-                            'addToQueue',
-                            ...(currentProvider === MIXED ? ['deleteFromPlaylist'] : [])
-                        ]}
-                    />
+                    {tracks.length > 0 && (
+                        <>
+                            {currentProvider === MIXED && <Header>Tracks</Header>}
+                            <TrackList
+                                onEndReached={onLoad}
+                                navigation={navigation}
+                                loading={tracks.length !== total}
+                                tracks={tracks}
+                                actions={[
+                                    'addToQueue',
+                                    ...(currentProvider === MIXED ? ['deleteFromPlaylist'] : [])
+                                ]}
+                            />
+                        </>
+                    )}
                 </View>
             </Content>
         </>

@@ -189,7 +189,7 @@ export default ({ navigation }: SpotifyPlaylistsProps) => {
                 />
             </Modal>}
             
-            <Content loading={loadingGetPlaylists}>
+            <Content loading={loadingGetPlaylists} noPadding>
                 <TrackList 
                     navigation={navigation}
                     tracks={data}
