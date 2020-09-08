@@ -3,7 +3,7 @@ import { GET_PLAYLIST_ACTIONS } from './constants';
 
 export const watchGetPlaylist = generateSaga({
     ...GET_PLAYLIST_ACTIONS,
-    url: ({ id, playlistId, type, offset }: { id: string, playlistId: string, type: number, offset: number }) => `${domain}/parties/${id}/playlists/${playlistId}?type=${type}&offset=${offset}`,
+    url: ({ id, playlistId, type, offset }: { id: string, playlistId: string, type: number, offset: number }) => `${domain}/users/${id}/playlists/${playlistId}?type=${type}&offset=${offset}`,
     method: 'GET'
 })
 

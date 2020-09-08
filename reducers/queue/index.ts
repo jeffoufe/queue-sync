@@ -5,15 +5,13 @@ import {
     DELETE_FROM_QUEUE_ACTIONS,
     PREPEND_TO_QUEUE, 
     CREATE_PARTY_ACTIONS, 
-    POP_SONG, 
-    INSTANT_PLAY_TRACK, 
-    PLAY_PAUSE_TRACK,
+    SEND_PLAY_PAUSE, 
+    INSTANT_PLAY_TRACK,
     GET_PARTY_ACTIONS,
     CREATE_SOUND_OBJECT,
     START_TIMER,
     PAUSE_TIMER,
-    RESET_TIMER,
-    JOIN_QUEUE
+    RESET_TIMER
 } from './constants'
 
 const initialState = {
@@ -22,13 +20,13 @@ const initialState = {
     startTime: null,
     remainingTime: null,
     // _id: null,
-    _id: '5f1828f38a06300e03f52ebb',
+    _id: '5f46298444e16bda06eb97d9',
     name: null,
     loadingCreateParty: false,
     loadingGetParty: true
 };
 
-Audio.setAudioModeAsync({ staysActiveInBackground: true })
+Audio.setAudioModeAsync({ staysActiveInBackground: true, playThroughEarpieceAndroid: false })
 
 export default (state: QueueReducerState = initialState, action: QueueAction) => {
     const [track, ...rest] = state.tracks
@@ -71,25 +69,16 @@ export default (state: QueueReducerState = initialState, action: QueueAction) =>
                 tracks: [...action.payload.tracks, ...state.tracks.slice(1)],
             }
         case ADD_TO_QUEUE_ACTIONS.success:
+        case SEND_PLAY_PAUSE:
         case DELETE_FROM_QUEUE_ACTIONS.success:
             return { 
                 ...state,
                 tracks: action.payload.tracks,
             };
-        case PLAY_PAUSE_TRACK:
-            return {
-                ...state,
-                tracks: [{ ...track, isPlayed: !track.isPlayed }, ...rest]
-            }
         case INSTANT_PLAY_TRACK:
             return {
                 ...state,
                 tracks: [{ ...track, isPlayed: true }, ...rest]
-            }
-        case POP_SONG:
-            return {
-                ...state,
-                tracks: [{ ...rest[0], isPlayed: true }, ...rest.slice(1)]
             }
         case START_TIMER:
             return {

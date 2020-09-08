@@ -6,7 +6,6 @@ import { TrackImage } from '..';
 import { canSeePlayer } from '../../utils'
 import { Track } from '../TrackList';
 import { PLAY_PAUSE_TRACK, NEXT_SONG } from '../../reducers/queue/constants';
-import { start } from 'repl';
 
 interface PlayerTrackImageProps {
     track: Track

@@ -1,12 +1,9 @@
 import { call, takeEvery, select, put } from 'redux-saga/effects'
-import { Track } from '../../components/TrackList';
-import { store } from '../../store';
 import axios from 'axios';
 import { generateSaga, domain } from '../../utils/';
 import { 
-    PLAY_TRACK, 
-    NEXT_SONG, 
-    POP_SONG, 
+    PLAY_TRACK,
+    NEXT_SONG,
     PREPEND_TO_QUEUE, 
     INSTANT_PLAY_TRACK, 
     PLAY_PAUSE_TRACK,
@@ -14,115 +11,12 @@ import {
     GET_PARTY_ACTIONS,
     ADD_TO_QUEUE_ACTIONS,
     DELETE_FROM_QUEUE_ACTIONS,
-    CREATE_SOUND_OBJECT,
-    START_TIMER,
-    PAUSE_TIMER,
-    RESET_TIMER,
     ADD_PLAYLIST_TO_QUEUE
 } from './constants';
 import { formatSpotifyTrack, formatSoundCloudTracks } from '../tracks/utils';
 import { SPOTIFY, SOUNDCLOUD } from '../library/constants';
-
-function* playSpotifyTrack(track: Track) {
-    const { timerId, remainingTime } = yield select((state: any) => state.queue);
-    const spotify = yield select((state: any) => state.user.spotify);
-    if (spotify) {
-        yield fetch(
-            `https://api.spotify.com/v1/me/player/play?device_id=${spotify.deviceID}`, 
-            {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${spotify.accessToken}`
-                },
-                body: JSON.stringify({
-                    uris: [`spotify:track:${track.id}`]
-                })
-            }
-        ).then(() => {
-            if (timerId) {
-                window.clearTimeout(timerId)
-            }
-            store.dispatch({ 
-                type: START_TIMER, 
-                payload: {
-                    timerId: window.setTimeout(
-                        () => store.dispatch({ type: NEXT_SONG }), 
-                        remainingTime || track.duration
-                    ),
-                    startTime: Date.now()
-                }
-            });
-        });
-    }
-}
-
-const onPlaybackStatusUpdate = ({ didJustFinish }: any) => {
-    if (didJustFinish) {
-        store.dispatch({ type: NEXT_SONG });
-    }
-}
-
-function* playSoundCloudTrack(track: any) {
-    const { soundObject } = track;
-    try {
-        const response = yield fetch(track.url)
-        const stream = yield response.json();
-        const mp3Url = stream.url;
-        if (!soundObject['_loaded']) {
-            yield soundObject.loadAsync({ uri: mp3Url });
-            yield soundObject.setProgressUpdateIntervalAsync(1000)
-            yield soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-        }
-        yield soundObject.playAsync();
-    } catch (error) {
-        alert(error);
-    }
-}
-
-function* playYouTubeTrack(track: any) {
-    const { soundObject, id, progress, file } = track;
-    const { _id } = yield select((state: any) => state.queue);
-    if (progress && progress !== 100 || !file) {
-        alert('File is not ready yet');
-    } else {
-        try {
-            if (!soundObject['_loaded']) {
-                yield soundObject.loadAsync({ uri: `${domain}/parties/${_id}/${id}/stream` });
-                yield soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-            }
-            yield soundObject.setStatusAsync({ shouldPlay: true })
-        } catch (error) {
-            alert(error);
-        }
-    }
-}
-
-function* playTrack() {
-    const { tracks } = yield select((state: any) => state.queue);
-    let track = tracks[0];
-    if (!track.soundObject) {
-        yield put({ type: CREATE_SOUND_OBJECT })
-        const queue = yield select((state: any) => state.queue);
-        track = queue.tracks[0];
-    }
-    let playFn;
-    switch(track.type) {
-        case SPOTIFY:
-            playFn = playSpotifyTrack;
-            break;
-        case SOUNDCLOUD:
-            playFn = playSoundCloudTrack;
-            break;
-        case 'youtube':
-            playFn = playYouTubeTrack;
-            break;
-        default:
-            break;
-    }
-    if (playFn) {
-        yield call(playFn, track);
-    }
-}
+import pauseCurrentTrack from './pause';
+import playTrack from './play';
 
 function* instantPlayTrack(action: any) {
     const { tracks } = action.payload;
@@ -138,75 +32,18 @@ export function* watchPlayTrack() {
     yield takeEvery(PLAY_TRACK, playTrack)
 }
 
-function* pauseSoundCloudTrack(isFinished: boolean) {
-    const { tracks } = yield select((state: any) => state.queue);
-    const currentTrack = tracks[0];
-    try {
-        yield currentTrack.soundObject.pauseAsync();
-        if (isFinished) {
-            yield currentTrack.soundObject.unloadAsync();
-            yield call(popTrack);
-        }
-    } catch (e) {
-        console.log('Sound not loaded');
-    }
-}
-
-function* pauseSpotifyTrack(isFinished: boolean) {
-    const { remainingTime, timerId, startTime } = yield select((state: any) => state.queue);
-    const spotify = yield select((state: any) => state.user.spotify);
-    if (spotify) {
-        yield fetch(
-            `https://api.spotify.com/v1/me/player/pause?device_id=${spotify.deviceID}`, 
-            {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${spotify.accessToken}`
-                }
-            }
-        );
-        if (isFinished) {
-            yield put({ type: RESET_TIMER });
-            yield call(popTrack);
-        } else {
-            window.clearTimeout(timerId);
-            put({
-                type: PAUSE_TIMER,
-                payload: {
-                    remainingTime: remainingTime - (Date.now() - startTime)
-                } 
-            })
-        }
-    }
-}
-
-function* pauseCurrentTrack(isFinished = false) {
-    const { tracks } = yield select((state: any) => state.queue);
-    const currentTrack = tracks[0];
-    switch (currentTrack.type) {
-        case SOUNDCLOUD:
-        case 'youtube':
-            yield call(pauseSoundCloudTrack, isFinished);
-            break;
-        case SPOTIFY:
-            yield call(pauseSpotifyTrack, isFinished);
-            break;
-            
-    }
-}
-
-function* popTrack() {
+export function* popTrack() {
     const { _id, tracks } = yield select((state: any) => state.queue);
     const currentTrack = tracks[0];
-    yield fetch(
-        `${domain}/parties/${_id}/tracks/${currentTrack.id}`, 
-        { method: 'DELETE' }
-    )
+    yield put({
+        type: DELETE_FROM_QUEUE_ACTIONS.saga,
+        urlParams: { id: _id, trackId: currentTrack['_id'] }
+    })
 }
 
 function* playPauseCurrentTrack() {
     const { tracks } = yield select((state: any) => state.queue);
-    if (!tracks[0].isPlayed) {
+    if (tracks[0].isPlayed) {
         yield call(pauseCurrentTrack)
     } else {
         yield call(playTrack)
@@ -218,9 +55,24 @@ export function* watchPlayPauseCurrentTrack() {
 }
 
 function* nextSong() {
-    yield call(pauseCurrentTrack, true)
-    yield put({ type: POP_SONG });
-    yield put({ type: PLAY_TRACK });
+    const { tracks, _id } = yield select((state: any) => state.queue);
+    const currentTrack = tracks[0];
+    
+    if (!tracks[0].isPlayed) {
+        yield call(pauseCurrentTrack, true)
+    }
+    
+    const response = yield axios({
+        url: `${domain}/users/${_id}/tracks/${currentTrack['_id']}?nextSong=true`,
+        method: 'DELETE'
+    })
+
+    yield put({
+        type: DELETE_FROM_QUEUE_ACTIONS.success,
+        payload: response.data
+    })
+
+    yield call(playTrack);
 }
 
 export function* watchNextSong() {
@@ -229,26 +81,26 @@ export function* watchNextSong() {
 
 export const watchCreateParty = generateSaga({
     ...CREATE_PARTY_ACTIONS,
-    url: () => `${domain}/parties`,
+    url: () => `${domain}/users`,
     method: 'POST',
-    responsePath: 'parties',
+    responsePath: 'users',
 })
 
 export const watchGetParty = generateSaga({
     ...GET_PARTY_ACTIONS,
-    url: ({ id }: { id: string }) => `${domain}/parties/${id}`,
+    url: ({ id }: { id: string }) => `${domain}/users/${id}`,
     method: 'GET',
 })
 
 export const watchAddToQueue = generateSaga({
     ...ADD_TO_QUEUE_ACTIONS,
-    url: ({ id }: { id: string }) => `${domain}/parties/${id}/tracks`,
+    url: ({ id }: { id: string }) => `${domain}/users/${id}/tracks`,
     method: 'POST',
 })
 
 export const watchDeleteFromQueue = generateSaga({
     ...DELETE_FROM_QUEUE_ACTIONS,
-    url: ({ id, trackId }: { id: string, trackId: string }) => `${domain}/parties/${id}/tracks/${trackId}`,
+    url: ({ id, trackId }: { id: string, trackId: string }) => `${domain}/users/${id}/tracks/${trackId}`,
     method: 'DELETE'
 })
 
@@ -266,7 +118,7 @@ function* getTracksFromPlaylist(action: any) {
             return response.data.items.map((item: any) => formatSpotifyTrack(item.track, _id));
         case SOUNDCLOUD:
             const idsResponse = yield axios({
-                url: `${domain}/parties/${_id}/sc-playlists/${playlistId}/tracks`,
+                url: `${domain}/users/${_id}/sc-playlists/${playlistId}/tracks`,
                 method: 'GET',
             });
             const tracksResponse = yield fetch(
@@ -283,7 +135,7 @@ function* addPlaylistToQueue(action: any) {
     const tracks = yield call(getTracksFromPlaylist, action); 
     const { _id } = yield select((state: any) => state.queue);
     yield axios({
-        url: `${domain}/parties/${_id}/tracks`,
+        url: `${domain}/users/${_id}/tracks`,
         method: 'POST',
         data: { tracks }
     })

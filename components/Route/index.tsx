@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { BackHandler, Alert } from 'react-native';
+import { BackHandler } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { Layout } from '../../components';
 import { canSeePlayer } from '../../utils';

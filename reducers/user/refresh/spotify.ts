@@ -7,8 +7,6 @@ import {
 
 export function* refreshSpotify() {
     const { refreshToken, expirationTime } = yield select((state: any) => state.user.spotify);
-    console.log(refreshToken);
-    console.log(Date.now() > expirationTime);
     if (refreshToken && Date.now() > expirationTime) {
         const credsB64 = btoa(`${CREDENTIALS.clientId}:${CREDENTIALS.clientSecret}`);
         const tokenResponse = yield fetch('https://accounts.spotify.com/api/token', {

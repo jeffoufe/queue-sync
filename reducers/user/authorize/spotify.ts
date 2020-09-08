@@ -23,13 +23,13 @@ const generateCodeChallenge = async () => {
         Crypto.CryptoDigestAlgorithm.SHA256,
         randomString
     );
-    console.log(btoa(hashedRandomString));
     return btoa(hashedRandomString);
 }
 
 function* authorizeSpotify() {
     const { _id } = yield select((state: any) => state.queue);
-    const codeVerifier = generateCodeChallenge();
+    const codeVerifier = yield generateCodeChallenge();
+    console.log(codeVerifier);
     const result = yield AuthSession.startAsync({
         authUrl:
             'https://accounts.spotify.com/authorize' +
@@ -60,7 +60,7 @@ function* authorizeSpotify() {
         const tokenResponseJSON = yield tokenResponse.json();
 
         const spotifyResponse = yield axios({
-            url: `${domain}/parties/${_id}/authorize?type=0`,
+            url: `${domain}/users/${_id}/authorize?type=0`,
             method: 'POST',
             data: tokenResponseJSON,
         })
@@ -106,7 +106,7 @@ function* selectDevice(action: any) {
     const { deviceID } = action.payload;
     const { _id } = yield select((state: any) => state.queue);
     const spotifyResponse = yield axios({
-        url: `${domain}/parties/${_id}/selectDevice?type=0`,
+        url: `${domain}/users/${_id}/selectDevice?type=0`,
         method: 'POST',
         data: { deviceID }
     })

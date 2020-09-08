@@ -9,7 +9,7 @@ function* getCredentials(action: any) {
 
     const response = yield axios({
         method: 'GET',
-        url: `${domain}/parties/${id}/credentials`,
+        url: `${domain}/users/${id}/credentials`,
     });
 
     yield put({
